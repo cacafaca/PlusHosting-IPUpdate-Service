@@ -27,6 +27,10 @@ namespace ProCode.PlusHosting.Client
         {
             return baseUri;
         }
-        
+
+        public Uri GetCPanelListUri()
+        {
+            return new Uri(baseUri, "/clientarea/services/cpaneldns/");
+        }
     }
 }

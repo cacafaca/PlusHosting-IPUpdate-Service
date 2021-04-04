@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("ProCode.SkyHosting.Client")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("ProCode.PlusHosting.Client")]
+[assembly: AssemblyDescription("Client for site www.plushosting.rs")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("ProCode.SkyHosting.Client")]
+[assembly: AssemblyCompany("ProCode")]
+[assembly: AssemblyProduct("ProCode.PlusHosting.Client")]
 [assembly: AssemblyCopyright("Copyright ©  2021")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

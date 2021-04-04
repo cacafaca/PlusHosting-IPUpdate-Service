@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace ProCode.PlusHosting.Client
 {
@@ -20,6 +21,7 @@ namespace ProCode.PlusHosting.Client
 
         public PlusHostingClient(UserCredential userCredential)
         {
+            isLoggedIn = false;
             this.userCredential = userCredential;
             uriDictionary = new UriDictionary();
             client = GetNewClient();
@@ -37,6 +39,7 @@ namespace ProCode.PlusHosting.Client
             client.DefaultRequestHeaders.Clear();
             client.DefaultRequestHeaders.Add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
             client.DefaultRequestHeaders.Add("Accept-Language", "sr,en-US;q=0.7,en;q=0.3");
+            client.DefaultRequestHeaders.Add("Cache-Control", "no-cache");
             client.DefaultRequestHeaders.Add("Accept-Encoding", "gzip, deflate, br");
             client.DefaultRequestHeaders.Add("Connection", "keep-alive");
             client.DefaultRequestHeaders.Add("Upgrade-Insecure-Requests", "1");
@@ -57,42 +60,47 @@ namespace ProCode.PlusHosting.Client
         /// <returns></returns>
         public async Task LoginAsync()
         {
-            var token = await GetSecurityTokenAsync();
-
-            // Generate content (login params).
-            var requestPayload = $"username={Uri.EscapeDataString(userCredential.GetUsername())}&password={userCredential.GetPassword()}&action=login&security_token={token}";
-            HttpContent content = new StringContent(requestPayload);
-            content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/x-www-form-urlencoded");   // This is important!
-
-            // Send POST command to login, because it needs login data to be secured.
-            HttpResponseMessage responseMsg = await client.PostAsync(uriDictionary.GetLoginUri(), content);
-            if (responseMsg.StatusCode == HttpStatusCode.OK)
+            if (IsLoggedIn == false)
             {
-                HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
-                var responseContent = await responseMsg.Content.ReadAsStringAsync();
-                doc.LoadHtml(responseContent);
+                var temporaryToken = await GetSecurityTokenAsync();
 
-                var logoutAnchor = doc.DocumentNode.SelectSingleNode("//a[@href='?action=logout' and @class='main-menu-login']");
-                if (logoutAnchor != null && logoutAnchor.InnerText.Trim().ToLower() == "logout")
+                // Generate content (login params).
+                var requestPayload = $"username={Uri.EscapeDataString(userCredential.GetUsername())}&password={userCredential.GetPassword()}&action=login&security_token={temporaryToken}";
+                HttpContent content = new StringContent(requestPayload);
+                content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/x-www-form-urlencoded");   // This is important!
+
+                // Send POST command to login, because it needs login data to be secured.
+                HttpResponseMessage responseMsg = await client.PostAsync(uriDictionary.GetLoginUri(), content);
+                if (responseMsg.StatusCode == HttpStatusCode.OK)
                 {
-                    // Logged in successfully!!!
-                }
-                else
-                {
-                    var loginAnchor = doc.DocumentNode.SelectSingleNode("//a[@href='https://portal.plus.rs/root' and @class='main-menu-login']");
-                    if (loginAnchor != null && loginAnchor.InnerText.Trim().ToLower() == "login")
+                    HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
+                    var responseContent = await responseMsg.Content.ReadAsStringAsync();
+                    doc.LoadHtml(responseContent);
+
+                    var logoutAnchor = doc.DocumentNode.SelectSingleNode("//a[@href='?action=logout' and @class='main-menu-login']");
+                    if (logoutAnchor != null && logoutAnchor.InnerText.Trim().ToLower() == "logout")
                     {
-                        throw new Exception("Wrong user and pass.");
+                        // Logged in successfully!!!
+                        isLoggedIn = true;
+                        System.Diagnostics.Debug.WriteLine("Logged in.", "PlusHosting");
                     }
                     else
                     {
-                        throw new Exception("Can't determine if Login succeeded.");
+                        var loginAnchor = doc.DocumentNode.SelectSingleNode("//a[@href='https://portal.plus.rs/root' and @class='main-menu-login']");
+                        if (loginAnchor != null && loginAnchor.InnerText.Trim().ToLower() == "login")
+                        {
+                            throw new Exception("Wrong user and pass.");
+                        }
+                        else
+                        {
+                            throw new Exception("Can't determine if Login succeeded.");
+                        }
                     }
                 }
-            }
-            else
-            {
-                throw new NotImplementedException("Throw some meaningful exception.");
+                else
+                {
+                    throw new NotImplementedException("Throw some meaningful exception.");
+                }
             }
         }
 
@@ -102,28 +110,35 @@ namespace ProCode.PlusHosting.Client
         /// <returns></returns>
         public async Task LogoutAsync()
         {
-            // Send GET command to logout.
-            HttpResponseMessage responseMsg = await client.GetAsync(uriDictionary.GetLogoutUri());
-            if (responseMsg.StatusCode == HttpStatusCode.OK)
+            if (IsLoggedIn == true)
             {
-                HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
-                var contentStr = await responseMsg.Content.ReadAsStringAsync();
-                doc.LoadHtml(contentStr);
-                var loginAnchor = doc.DocumentNode.SelectSingleNode("//a[@href='https://portal.plus.rs/root' and @class='main-menu-login']");
-                if (loginAnchor != null && loginAnchor.InnerText.Trim().ToLower() == "login")
+                // Send GET command to logout.
+                HttpResponseMessage responseMsg = await client.GetAsync(uriDictionary.GetLogoutUri());
+                if (responseMsg.StatusCode == HttpStatusCode.OK)
                 {
-                    // Logged out successfully!!!
+                    HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
+                    var contentStr = await responseMsg.Content.ReadAsStringAsync();
+                    doc.LoadHtml(contentStr);
+                    var loginAnchor = doc.DocumentNode.SelectSingleNode("//a[@href='https://portal.plus.rs/root' and @class='main-menu-login']");
+                    if (loginAnchor != null && loginAnchor.InnerText.Trim().ToLower() == "login")
+                    {
+                        // Logged out successfully!!!
+                        isLoggedIn = false;
+                        System.Diagnostics.Debug.WriteLine("Logged out.", "PlusHosting");
+                    }
+                    else
+                    {
+                        throw new Exception("Can't determine if Login succeeded.");
+                    }
                 }
                 else
                 {
-                    throw new Exception("Can't determine if Login succeeded.");
+                    throw new Exception($"Response Status Code in not OK. StatusCode={responseMsg.StatusCode}.");
                 }
             }
-            else
-            {
-                throw new Exception($"Response Status Code in not OK. StatusCode={responseMsg.StatusCode}.");
-            }
         }
+
+        string securityToken = string.Empty;
 
         /// <summary>
         /// Get security token from tag: <input type="hidden" name="security_token" value="62ee407a96e7e4ca9357319a7585e551" />
@@ -147,18 +162,237 @@ namespace ProCode.PlusHosting.Client
             }
             else
             {
-
+                throw new Exception("Can't read security token.");
             }
 
             return token;
         }
 
-        /// <summary>
-        /// Gets list of cPanes from https://portal.plus.rs/clientarea/services/cpaneldns/. Probably will always be only one.
-        /// </summary>
-        public void GetCPanelDnsList()
-        {
 
+
+        /// <summary>
+        /// Gets list of cPanels DNS from https://portal.plus.rs/clientarea/services/cpaneldns/. Probably will always be only one.
+        /// </summary>
+        public async Task<IList<CPanelDnsServiceUri>> GetCPanelDnsServiceUriListAsync()
+        {
+            List<CPanelDnsServiceUri> cpanelDnsServiceUriList = new List<CPanelDnsServiceUri>();
+
+            // Send GET command to fetch list of cPanels. 
+
+            HttpResponseMessage responseMsg = await client.GetAsync(uriDictionary.GetCPanelListUri());
+            if (responseMsg.StatusCode == HttpStatusCode.OK)
+            {
+                HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
+                var contentStr = await responseMsg.Content.ReadAsStringAsync();
+                doc.LoadHtml(contentStr);
+                var cpanelTableBodyNode = doc.DocumentNode.SelectSingleNode("/html/body/div[2]/section/div/div/div[2]/table/tbody");
+                if (cpanelTableBodyNode != null)
+                {
+                    foreach (var row in cpanelTableBodyNode.ChildNodes.Where(x => x.NodeType == HtmlAgilityPack.HtmlNodeType.Element))
+                    {
+                        var productNode = row.ChildNodes.Where(el => el.NodeType == HtmlAgilityPack.HtmlNodeType.Element).FirstOrDefault();
+                        if (productNode != null)
+                        {
+                            var anchorNode = productNode.SelectSingleNode(".//a");  // dot(.) in ".//a" means search from current node, and not from root document node.
+                            if (anchorNode != null)
+                            {
+                                var cpanelDnsNameNode = productNode.SelectSingleNode(".//i[@class='slb']");
+                                if (cpanelDnsNameNode != null)
+                                {
+                                    cpanelDnsServiceUriList.Add(new CPanelDnsServiceUri(new Uri(uriDictionary.GetBase(), anchorNode.Attributes["href"].Value), cpanelDnsNameNode.InnerText.Trim()));
+                                }
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    throw new Exception("Can't find table with cPanels.");
+                }
+            }
+            else
+            {
+                throw new Exception($"Response Status Code in not OK. StatusCode={responseMsg.StatusCode}.");
+            }
+
+            return cpanelDnsServiceUriList;
         }
+
+        /// <summary>
+        /// Get Domain list for requested cPanel Uri.
+        /// </summary>
+        /// <param name="cpanelUri"></param>
+        /// <returns></returns>
+        public async Task<IList<CPanelDnsDomainUri>> GetCPanelDnsDomainUriListAsync(Uri cpanelUri)
+        {
+            IList<CPanelDnsDomainUri> cpanelDnsDomainList = new List<CPanelDnsDomainUri>();
+
+            // Send GET command to fetch list of Domains for cPanel.
+
+            HttpResponseMessage responseMsg = await client.GetAsync(cpanelUri);
+            if (responseMsg.StatusCode == HttpStatusCode.OK)
+            {
+                HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
+                var contentStr = await responseMsg.Content.ReadAsStringAsync();
+                doc.LoadHtml(contentStr);
+                var cpanelTableBodyNode = doc.DocumentNode.SelectSingleNode("/html/body/div[2]/section/div/div/div/form/table[1]/tbody[1]");
+                if (cpanelTableBodyNode != null)
+                {
+                    foreach (var rowNode in cpanelTableBodyNode.ChildNodes.Where(x => x.NodeType == HtmlAgilityPack.HtmlNodeType.Element))
+                    {
+                        var domainNode = rowNode.SelectSingleNode(".//td[2]");
+                        if (domainNode != null)
+                        {
+                            var anchorNode = domainNode.SelectSingleNode(".//a");  // dot(.) in ".//a" means search from current node, and not from root document node.
+                            if (anchorNode != null)
+                            {
+                                cpanelDnsDomainList.Add(new CPanelDnsDomainUri(new Uri(uriDictionary.GetBase(), anchorNode.Attributes["href"].Value), anchorNode.InnerText.Trim()));
+                            }
+                        }
+
+                    }
+                }
+                else
+                {
+                    throw new Exception("Can't find table with cPanels.");
+                }
+
+                if (securityToken == string.Empty)
+                {
+                    var securityTokenNode = doc.DocumentNode.SelectSingleNode("//*[@name='security_token']");
+                    if (securityTokenNode != null)
+                    {
+                        securityToken = securityTokenNode.Attributes["value"].Value;
+                    }
+                }
+            }
+            else
+            {
+                throw new Exception($"Response Status Code in not OK. StatusCode={responseMsg.StatusCode}.");
+            }
+
+            return cpanelDnsDomainList;
+        }
+
+        /// <summary>
+        /// Retrieve list of records of type SOA, NS, A, AAAA, CNAME, ...
+        /// </summary>
+        /// <param name="domainUri"></param>
+        /// <returns></returns>
+        public async Task<IList<CPanelDnsDomainResourceRecordUri>> GetCPanelDnsDomainResourceRecordListAsync(Uri domainUri)
+        {
+            IList<CPanelDnsDomainResourceRecordUri> cpanelDnsDomainResourceRecordList;
+
+            // Send GET command to fetch list of Domains for cPanel.
+
+            HttpResponseMessage responseMsg = await client.GetAsync(domainUri);
+            if (responseMsg.StatusCode == HttpStatusCode.OK)
+            {
+                HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
+                var contentStr = await responseMsg.Content.ReadAsStringAsync();
+                doc.LoadHtml(contentStr);
+
+                cpanelDnsDomainResourceRecordList = GenerateResourceRecordListFromHtml(domainUri, doc);
+            }
+            else
+            {
+                throw new Exception($"Response Status Code in not OK. StatusCode={responseMsg.StatusCode}.");
+            }
+
+            return cpanelDnsDomainResourceRecordList ?? new List<CPanelDnsDomainResourceRecordUri>();
+        }
+
+        public async Task<IList<CPanelDnsDomainResourceRecordUri>> UpdateCPanelDnsDomainResourceRecordAsync(CPanelDnsDomainResourceRecordUri updateResourceRecord, Uri domainUri)
+        {
+            IList<CPanelDnsDomainResourceRecordUri> cpanelDnsDomainResourceRecordList;
+
+            string contentStr = string.Join("&", new string[] {
+                "type=" + Uri.EscapeDataString(updateResourceRecord.RecordType),
+                "dom=" + Uri.EscapeDataString(updateResourceRecord.DomainId),
+                "name=" + Uri.EscapeDataString(updateResourceRecord.Name),
+                "ttl=" + Uri.EscapeDataString(updateResourceRecord.Ttl),
+                $"content{Uri.EscapeDataString("[0]")}={Uri.EscapeDataString(updateResourceRecord.Data)}",
+                "submit=" + Uri.EscapeDataString("Pošalji"),
+                "security_token=" + securityToken });
+            HttpContent httpContent = new StringContent(contentStr);
+            httpContent.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");   // This is important!
+
+            HttpResponseMessage responseMsg = await client.PostAsync(updateResourceRecord.EditUri.AbsolutePath, httpContent);
+            if (responseMsg.StatusCode == HttpStatusCode.OK)
+            {
+                HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
+                var responseContentStr = await responseMsg.Content.ReadAsStringAsync();
+                doc.LoadHtml(responseContentStr);
+
+                cpanelDnsDomainResourceRecordList = GenerateResourceRecordListFromHtml(domainUri, doc);
+                var actualValue = cpanelDnsDomainResourceRecordList.Where(record => record.RecordType == updateResourceRecord.RecordType && record.Name == updateResourceRecord.Name).FirstOrDefault()?.Data;
+                if (actualValue != null)
+                {
+                    if (actualValue != updateResourceRecord.Data)
+                        throw new Exception($"Update failed! Data field is different. (sent value) '{updateResourceRecord.Data}' <> '{actualValue}' (actual value).");
+                }
+                else
+                    throw new Exception($"Can't find record (Type, Name)=({updateResourceRecord.RecordType}, {updateResourceRecord.Name}).");
+            }
+            else
+            {
+                throw new Exception($"Response Status Code in not OK. StatusCode={responseMsg.StatusCode}.");
+            }
+
+            return cpanelDnsDomainResourceRecordList ?? new List<CPanelDnsDomainResourceRecordUri>();
+        }
+
+        IList<CPanelDnsDomainResourceRecordUri> GenerateResourceRecordListFromHtml(Uri domainUri, HtmlAgilityPack.HtmlDocument doc)
+        {
+            IList<CPanelDnsDomainResourceRecordUri> cpanelDnsDomainResourceRecordList = new List<CPanelDnsDomainResourceRecordUri>();
+
+            var allTablesFormNode = doc.DocumentNode.SelectSingleNode($"//form[@action='{domainUri.LocalPath.TrimStart('/')}']"); // <form> tag is container for all tables (SOA, NS, ...)
+            if (allTablesFormNode != null)
+            {
+                foreach (var tableNode in allTablesFormNode.ChildNodes.Where(x => x.NodeType == HtmlAgilityPack.HtmlNodeType.Element))
+                {
+                    var tableHeaderNode = tableNode.SelectSingleNode(".//thead");
+                    if (tableHeaderNode != null)
+                    {
+                        var tableBodyNode = tableNode.SelectSingleNode(".//tbody[2]");
+                        if (tableBodyNode != null)
+                        {
+                            // Iterate through rows of table but only ones that have 6 columns. Other can contain other non-important data, like "Add new record" link at the end of the each table.
+                            foreach (var rowNode in tableBodyNode.ChildNodes.Where(node => node.NodeType == HtmlAgilityPack.HtmlNodeType.Element &&
+                                node.ChildNodes.Where(childNode => childNode.NodeType == HtmlAgilityPack.HtmlNodeType.Element).Count() == 6))
+                            {
+                                var editUriStr = rowNode.SelectSingleNode(".//td[6]")?.SelectSingleNode(".//a[@title='Urediti']")?.Attributes["href"].Value;
+                                var deleteUriStr = rowNode.SelectSingleNode(".//td[6]")?.SelectSingleNode(".//a[@title='Izbrisati']")?.Attributes["href"].Value;
+
+                                cpanelDnsDomainResourceRecordList.Add(new CPanelDnsDomainResourceRecordUri()
+                                {
+                                    Name = rowNode.SelectSingleNode(".//td[1]").InnerText.Trim(),
+                                    Ttl = rowNode.SelectSingleNode(".//td[3]").InnerText.Trim(),
+                                    RecordType = rowNode.SelectSingleNode(".//td[4]").InnerText.Trim(),
+                                    Data = rowNode.SelectSingleNode(".//td[5]").InnerText.Trim(),
+                                    EditUri = editUriStr != null ? new Uri(uriDictionary.GetBase(), editUriStr) : null,
+                                    DeleteUri = deleteUriStr != null ? new Uri(uriDictionary.GetBase(), deleteUriStr) : null,
+                                    DomainId = HttpUtility.ParseQueryString(domainUri.AbsoluteUri).Get("domain_id")
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                throw new Exception("Can't find table with cPanels.");
+            }
+
+            return cpanelDnsDomainResourceRecordList;
+        }
+
+        private bool isLoggedIn;
+
+        public bool IsLoggedIn
+        {
+            get { return isLoggedIn; }
+        }
+
     }
 }

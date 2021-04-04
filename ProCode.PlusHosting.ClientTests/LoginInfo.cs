@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using ProCode.PlusHosting.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,20 +15,19 @@ namespace ProCode.PlusHosting.ClientTests
         public const string FileName = "LoginInfo.json";
         #endregion
 
-        public string User { get; }
-        public SecureString Pass { get; }
+        public UserCredential UserCredential { get; }
         public LoginInfo()
         {
             var config = new ConfigurationBuilder()
                 .SetBasePath(System.AppDomain.CurrentDomain.BaseDirectory)
                 .AddJsonFile(LoginInfo.FileName).Build();
-            User = config.GetSection(nameof(User)).Value;
-            Pass = new SecureString();
-            foreach (char passChar in config.GetSection(nameof(Pass)).Value.ToCharArray())
+            string user = config.GetSection("User").Value;
+            var pass = new SecureString();
+            foreach (char passChar in config.GetSection("Pass").Value.ToCharArray())
             {
-                Pass.AppendChar(passChar);
+                pass.AppendChar(passChar);
             }
-
+            UserCredential = new UserCredential(user, pass);
         }
     }
 }
