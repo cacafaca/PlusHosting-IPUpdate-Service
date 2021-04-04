@@ -1,5 +1,5 @@
 ﻿
-namespace ProCode.PlusHosting.IPUpdate.Service
+namespace ProCode.PlusHosting.IpUpdate.Service
 {
     partial class ProjectInstaller
     {

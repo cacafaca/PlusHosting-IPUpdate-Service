@@ -8,7 +8,7 @@ using System.ServiceProcess;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProCode.PlusHosting.IPUpdate.Service
+namespace ProCode.PlusHosting.IpUpdate.Service
 {
     public partial class PlusHostingIpUpdateService : ServiceBase
     {
