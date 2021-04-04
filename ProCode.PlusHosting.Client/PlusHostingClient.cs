@@ -67,7 +67,7 @@ namespace ProCode.PlusHosting.Client
                 // Generate content (login params).
                 var requestPayload = $"username={Uri.EscapeDataString(userCredential.GetUsername())}&password={userCredential.GetPassword()}&action=login&security_token={temporaryToken}";
                 HttpContent content = new StringContent(requestPayload);
-                content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/x-www-form-urlencoded");   // This is important!
+                content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");   // This is important!
 
                 // Send POST command to login, because it needs login data to be secured.
                 HttpResponseMessage responseMsg = await client.PostAsync(uriDictionary.GetLoginUri(), content);

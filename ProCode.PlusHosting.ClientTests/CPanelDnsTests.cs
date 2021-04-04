@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProCode.PlusHosting.ClientTests
+namespace ProCode.PlusHosting.Client.Tests
 {
     [TestClass()]
     public class CPanelDnsTests

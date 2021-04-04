@@ -5,7 +5,7 @@ using System.Linq;
 using System.Security;
 using System.Threading.Tasks;
 
-namespace ProCode.PlusHosting.ClientTests
+namespace ProCode.PlusHosting.Client.Tests
 {
     [TestClass()]
     public class PlusHostingClientTests

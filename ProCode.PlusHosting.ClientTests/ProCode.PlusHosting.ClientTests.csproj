@@ -140,6 +140,7 @@
   <ItemGroup>
     <Compile Include="CPanelDnsTests.cs" />
     <Compile Include="LoginInfo.cs" />
+    <Compile Include="MyIpClientTests.cs" />
     <Compile Include="PlusHostingClientTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

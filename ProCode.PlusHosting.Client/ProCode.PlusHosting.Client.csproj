@@ -59,6 +59,7 @@
     <Compile Include="CPanelDnsService.cs" />
     <Compile Include="CPanelDnsDomain.cs" />
     <Compile Include="ModelUri\ServiceUri.cs" />
+    <Compile Include="MyIpClient.cs" />
     <Compile Include="PlusHostingClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">

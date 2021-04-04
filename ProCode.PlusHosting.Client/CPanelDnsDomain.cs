@@ -6,7 +6,7 @@ namespace ProCode.PlusHosting.Client
     {
         #region Fields
         private readonly CPanelDnsResourceRecords resourceRecords;
-        private Uri domainUri;
+        private readonly Uri domainUri;
         #endregion
 
         #region Constructors

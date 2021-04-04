@@ -7,7 +7,7 @@ using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProCode.PlusHosting.ClientTests
+namespace ProCode.PlusHosting.Client.Tests
 {
     class LoginInfo
     {
