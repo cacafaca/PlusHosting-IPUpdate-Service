@@ -6,25 +6,42 @@ using System.Threading.Tasks;
 
 namespace ProCode.PlusHosting.Client
 {
+    /// <summary>
+    /// Represents cPanel functionality from PlusHosting.
+    /// </summary>
     public class CPanelDns
     {
-        private PlusHostingClient Client { get; }
+        #region Fields
+        private readonly PlusHostingClient client;
+        private readonly CPanelDnsServices services;
+        #endregion
+
+        #region Constructors
         public CPanelDns(UserCredential userCredential)
         {
-            Client = new PlusHostingClient(userCredential);
+            client = new PlusHostingClient(userCredential);
 
-            services = new CPanelDnsServiceList(Client);
+            services = new CPanelDnsServices(client);
         }
+        #endregion
 
-        private readonly CPanelDnsServiceList services;
-        public CPanelDnsServiceList Services { get { return services; } }
-
-        /// <summary>
-        /// After instantiating class you need to call LoadAsync method to read the data from PlusHosting site.
-        /// </summary>
-        public async void LoadAsync()
+        #region Finalizes
+        ~CPanelDns()
         {
-            await Task.Run(() => services.LoadAsync());
+            client.LogoutAsync().Wait();
         }
+        #endregion
+
+        #region Properties
+        public CPanelDnsServices Services { get { return services; } }
+        public bool IsLoggedIn { get { return client.IsLoggedIn; } }
+        #endregion
+
+        #region Methods
+        public void Logout()
+        {
+            client.LogoutAsync().Wait();
+        }
+        #endregion
     }
 }

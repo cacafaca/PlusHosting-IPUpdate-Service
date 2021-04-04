@@ -16,14 +16,14 @@ namespace ProCode.PlusHosting.Client
         #endregion
 
         HttpClient client;
-        readonly UriDictionary uriDictionary;
+        readonly PlusHostingUriDictionary uriDictionary;
         readonly UserCredential userCredential;
 
         public PlusHostingClient(UserCredential userCredential)
         {
             isLoggedIn = false;
             this.userCredential = userCredential;
-            uriDictionary = new UriDictionary();
+            uriDictionary = new PlusHostingUriDictionary();
             client = GetNewClient();
         }
 
@@ -173,9 +173,9 @@ namespace ProCode.PlusHosting.Client
         /// <summary>
         /// Gets list of cPanels DNS from https://portal.plus.rs/clientarea/services/cpaneldns/. Probably will always be only one.
         /// </summary>
-        public async Task<IList<CPanelDnsServiceUri>> GetCPanelDnsServiceUriListAsync()
+        public async Task<IList<ModelUri.ServiceUri>> GetCPanelDnsServiceUriListAsync()
         {
-            List<CPanelDnsServiceUri> cpanelDnsServiceUriList = new List<CPanelDnsServiceUri>();
+            List<ModelUri.ServiceUri> cpanelDnsServiceUriList = new List<ModelUri.ServiceUri>();
 
             // Send GET command to fetch list of cPanels. 
 
@@ -199,7 +199,7 @@ namespace ProCode.PlusHosting.Client
                                 var cpanelDnsNameNode = productNode.SelectSingleNode(".//i[@class='slb']");
                                 if (cpanelDnsNameNode != null)
                                 {
-                                    cpanelDnsServiceUriList.Add(new CPanelDnsServiceUri(new Uri(uriDictionary.GetBase(), anchorNode.Attributes["href"].Value), cpanelDnsNameNode.InnerText.Trim()));
+                                    cpanelDnsServiceUriList.Add(new ModelUri.ServiceUri(new Uri(uriDictionary.GetBase(), anchorNode.Attributes["href"].Value), cpanelDnsNameNode.InnerText.Trim()));
                                 }
                             }
                         }
@@ -221,21 +221,21 @@ namespace ProCode.PlusHosting.Client
         /// <summary>
         /// Get Domain list for requested cPanel Uri.
         /// </summary>
-        /// <param name="cpanelUri"></param>
+        /// <param name="serviceUri"></param>
         /// <returns></returns>
-        public async Task<IList<CPanelDnsDomainUri>> GetCPanelDnsDomainUriListAsync(Uri cpanelUri)
+        public async Task<IList<ModelUri.DomainUri>> GetCPanelDnsDomainUriListAsync(Uri serviceUri)
         {
-            IList<CPanelDnsDomainUri> cpanelDnsDomainList = new List<CPanelDnsDomainUri>();
+            IList<ModelUri.DomainUri> cpanelDnsDomainList = new List<ModelUri.DomainUri>();
 
             // Send GET command to fetch list of Domains for cPanel.
 
-            HttpResponseMessage responseMsg = await client.GetAsync(cpanelUri);
+            HttpResponseMessage responseMsg = await client.GetAsync(serviceUri);
             if (responseMsg.StatusCode == HttpStatusCode.OK)
             {
                 HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
                 var contentStr = await responseMsg.Content.ReadAsStringAsync();
                 doc.LoadHtml(contentStr);
-                var cpanelTableBodyNode = doc.DocumentNode.SelectSingleNode("/html/body/div[2]/section/div/div/div/form/table[1]/tbody[1]");
+                var cpanelTableBodyNode = doc.DocumentNode.SelectSingleNode("/html/body/div[2]/section/div/div/div/form/table[1]/tbody[1]");  // /html/body/div[2]/section/div/div/div/form/table[1]/tbody[1]
                 if (cpanelTableBodyNode != null)
                 {
                     foreach (var rowNode in cpanelTableBodyNode.ChildNodes.Where(x => x.NodeType == HtmlAgilityPack.HtmlNodeType.Element))
@@ -246,7 +246,7 @@ namespace ProCode.PlusHosting.Client
                             var anchorNode = domainNode.SelectSingleNode(".//a");  // dot(.) in ".//a" means search from current node, and not from root document node.
                             if (anchorNode != null)
                             {
-                                cpanelDnsDomainList.Add(new CPanelDnsDomainUri(new Uri(uriDictionary.GetBase(), anchorNode.Attributes["href"].Value), anchorNode.InnerText.Trim()));
+                                cpanelDnsDomainList.Add(new ModelUri.DomainUri(new Uri(uriDictionary.GetBase(), anchorNode.Attributes["href"].Value), anchorNode.InnerText.Trim()));
                             }
                         }
 
@@ -279,9 +279,9 @@ namespace ProCode.PlusHosting.Client
         /// </summary>
         /// <param name="domainUri"></param>
         /// <returns></returns>
-        public async Task<IList<CPanelDnsDomainResourceRecordUri>> GetCPanelDnsDomainResourceRecordListAsync(Uri domainUri)
+        public async Task<IList<ModelUri.DomainResourceRecordUri>> GetCPanelDnsDomainResourceRecordListAsync(Uri domainUri)
         {
-            IList<CPanelDnsDomainResourceRecordUri> cpanelDnsDomainResourceRecordList;
+            IList<ModelUri.DomainResourceRecordUri> cpanelDnsDomainResourceRecordList;
 
             // Send GET command to fetch list of Domains for cPanel.
 
@@ -299,12 +299,12 @@ namespace ProCode.PlusHosting.Client
                 throw new Exception($"Response Status Code in not OK. StatusCode={responseMsg.StatusCode}.");
             }
 
-            return cpanelDnsDomainResourceRecordList ?? new List<CPanelDnsDomainResourceRecordUri>();
+            return cpanelDnsDomainResourceRecordList ?? new List<ModelUri.DomainResourceRecordUri>();
         }
 
-        public async Task<IList<CPanelDnsDomainResourceRecordUri>> UpdateCPanelDnsDomainResourceRecordAsync(CPanelDnsDomainResourceRecordUri updateResourceRecord, Uri domainUri)
+        public async Task<IList<ModelUri.DomainResourceRecordUri>> UpdateCPanelDnsDomainResourceRecordAsync(ModelUri.DomainResourceRecordUri updateResourceRecord, Uri domainUri)
         {
-            IList<CPanelDnsDomainResourceRecordUri> cpanelDnsDomainResourceRecordList;
+            IList<ModelUri.DomainResourceRecordUri> cpanelDnsDomainResourceRecordList;
 
             string contentStr = string.Join("&", new string[] {
                 "type=" + Uri.EscapeDataString(updateResourceRecord.RecordType),
@@ -339,12 +339,12 @@ namespace ProCode.PlusHosting.Client
                 throw new Exception($"Response Status Code in not OK. StatusCode={responseMsg.StatusCode}.");
             }
 
-            return cpanelDnsDomainResourceRecordList ?? new List<CPanelDnsDomainResourceRecordUri>();
+            return cpanelDnsDomainResourceRecordList ?? new List<ModelUri.DomainResourceRecordUri>();
         }
 
-        IList<CPanelDnsDomainResourceRecordUri> GenerateResourceRecordListFromHtml(Uri domainUri, HtmlAgilityPack.HtmlDocument doc)
+        IList<ModelUri.DomainResourceRecordUri> GenerateResourceRecordListFromHtml(Uri domainUri, HtmlAgilityPack.HtmlDocument doc)
         {
-            IList<CPanelDnsDomainResourceRecordUri> cpanelDnsDomainResourceRecordList = new List<CPanelDnsDomainResourceRecordUri>();
+            IList<ModelUri.DomainResourceRecordUri> cpanelDnsDomainResourceRecordList = new List<ModelUri.DomainResourceRecordUri>();
 
             var allTablesFormNode = doc.DocumentNode.SelectSingleNode($"//form[@action='{domainUri.LocalPath.TrimStart('/')}']"); // <form> tag is container for all tables (SOA, NS, ...)
             if (allTablesFormNode != null)
@@ -364,7 +364,7 @@ namespace ProCode.PlusHosting.Client
                                 var editUriStr = rowNode.SelectSingleNode(".//td[6]")?.SelectSingleNode(".//a[@title='Urediti']")?.Attributes["href"].Value;
                                 var deleteUriStr = rowNode.SelectSingleNode(".//td[6]")?.SelectSingleNode(".//a[@title='Izbrisati']")?.Attributes["href"].Value;
 
-                                cpanelDnsDomainResourceRecordList.Add(new CPanelDnsDomainResourceRecordUri()
+                                cpanelDnsDomainResourceRecordList.Add(new ModelUri.DomainResourceRecordUri()
                                 {
                                     Name = rowNode.SelectSingleNode(".//td[1]").InnerText.Trim(),
                                     Ttl = rowNode.SelectSingleNode(".//td[3]").InnerText.Trim(),

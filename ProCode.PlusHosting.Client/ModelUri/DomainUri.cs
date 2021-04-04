@@ -1,12 +1,12 @@
 ﻿using System;
 
-namespace ProCode.PlusHosting.Client
+namespace ProCode.PlusHosting.Client.ModelUri
 {
-    public class CPanelDnsDomainUri
+    public class DomainUri
     {
         public Uri Uri { get; }
         public string Name { get; }
-        public CPanelDnsDomainUri(Uri uri, string name)
+        public DomainUri(Uri uri, string name)
         {
             Uri = uri;
             Name = name;

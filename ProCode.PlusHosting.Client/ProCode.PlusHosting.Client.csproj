@@ -50,13 +50,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CPanelDns.cs" />
-    <Compile Include="CPanelDnsDomainList.cs" />
-    <Compile Include="CPanelDnsUriModel\CPanelDnsDomainResourceRecordUri.cs" />
-    <Compile Include="CPanelDnsUriModel\CPanelDnsDomainUri.cs" />
-    <Compile Include="CPanelDnsServiceList.cs" />
+    <Compile Include="CPanelDnsDomains.cs" />
+    <Compile Include="CPanelDnsResourceRecord.cs" />
+    <Compile Include="CPanelDnsResourceRecords.cs" />
+    <Compile Include="ModelUri\DomainResourceRecordUri.cs" />
+    <Compile Include="ModelUri\DomainUri.cs" />
+    <Compile Include="CPanelDnsServices.cs" />
     <Compile Include="CPanelDnsService.cs" />
     <Compile Include="CPanelDnsDomain.cs" />
-    <Compile Include="CPanelDnsUriModel\CPanelDnsServiceUri.cs" />
+    <Compile Include="ModelUri\ServiceUri.cs" />
     <Compile Include="PlusHostingClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -64,7 +66,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="UriDictionary.cs" />
+    <Compile Include="PlusHostingUriDictionary.cs" />
     <Compile Include="UserCredential.cs" />
   </ItemGroup>
   <ItemGroup>

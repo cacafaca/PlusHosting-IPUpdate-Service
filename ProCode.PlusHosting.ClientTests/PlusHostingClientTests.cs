@@ -76,8 +76,8 @@ namespace ProCode.PlusHosting.ClientTests
             }
         }
 
-        [TestMethod()]
-        public void Get_First_Domain_And_Its_ResourceRecords()
+        [TestMethod()]        
+        public void Get_First_Domain_And_Its_ResourceRecords()  // This test encompass whole read-only functionalities.
         {
             var client = GetClientWithLoginInfo();
             client.LoginAsync().Wait();

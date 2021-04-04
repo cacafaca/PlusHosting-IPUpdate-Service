@@ -5,9 +5,9 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProCode.PlusHosting.Client
+namespace ProCode.PlusHosting.Client.ModelUri
 {
-    public class CPanelDnsDomainResourceRecordUri
+    public class DomainResourceRecordUri
     {
         public string RecordType { get; set; }
         public string Name { get; set; }

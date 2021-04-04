@@ -2,14 +2,14 @@
 
 namespace ProCode.PlusHosting.Client
 {
-    public class UriDictionary
+    public class PlusHostingUriDictionary
     {
         #region Constants
         const string baseUriStr = "https://portal.plus.rs";
         #endregion
 
         readonly Uri baseUri;
-        public UriDictionary()
+        public PlusHostingUriDictionary()
         {
             baseUri = new Uri(baseUriStr);
         }

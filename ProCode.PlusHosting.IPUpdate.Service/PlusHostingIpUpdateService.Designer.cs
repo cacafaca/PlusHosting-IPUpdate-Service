@@ -1,7 +1,7 @@
 ﻿
 namespace ProCode.PlusHosting.IPUpdate.Service
 {
-    partial class Service1
+    partial class PlusHostingIpUpdateService
     {
         /// <summary> 
         /// Required designer variable.
@@ -29,8 +29,11 @@ namespace ProCode.PlusHosting.IPUpdate.Service
         /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
+            // 
+            // PlusHostingIpUpdateService
+            // 
             this.ServiceName = "Service1";
+
         }
 
         #endregion

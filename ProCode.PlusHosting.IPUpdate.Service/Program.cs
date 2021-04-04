@@ -17,7 +17,7 @@ namespace ProCode.PlusHosting.IPUpdate.Service
             ServiceBase[] ServicesToRun;
             ServicesToRun = new ServiceBase[]
             {
-                new Service1()
+                new PlusHostingIpUpdateService()
             };
             ServiceBase.Run(ServicesToRun);
         }

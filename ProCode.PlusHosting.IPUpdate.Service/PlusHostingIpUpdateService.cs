@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 
 namespace ProCode.PlusHosting.IPUpdate.Service
 {
-    public partial class Service1 : ServiceBase
+    public partial class PlusHostingIpUpdateService : ServiceBase
     {
-        public Service1()
+        public PlusHostingIpUpdateService()
         {
             InitializeComponent();
         }
