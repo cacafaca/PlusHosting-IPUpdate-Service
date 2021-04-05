@@ -1,7 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
+using ProCode.PlusHosting.Client;
 using System.Security;
 
-namespace ProCode.PlusHosting.Client.Tests
+namespace ProCode.PlusHosting.IpUpdate.Service
 {
     class LoginInfo
     {

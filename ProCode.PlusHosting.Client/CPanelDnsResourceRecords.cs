@@ -31,13 +31,7 @@ namespace ProCode.PlusHosting.Client
             {
                 foreach (var resourceRecordUri in resourceRecordUriList)
                 {
-                    resourceRecordList.Add(new CPanelDnsResourceRecord()
-                    { 
-                        RecordType = resourceRecordUri.RecordType,
-                        Name = resourceRecordUri.Name,
-                        Ttl = resourceRecordUri.Ttl,
-                        Data = resourceRecordUri.Data
-                    });
+                    resourceRecordList.Add(new CPanelDnsResourceRecord(client, domainUri, resourceRecordUri));
                 }
             }
 

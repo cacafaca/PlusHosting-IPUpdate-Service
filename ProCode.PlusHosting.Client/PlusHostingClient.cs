@@ -82,7 +82,7 @@ namespace ProCode.PlusHosting.Client
                     {
                         // Logged in successfully!!!
                         isLoggedIn = true;
-                        System.Diagnostics.Debug.WriteLine("Logged in.", "PlusHosting");
+                        Debug.WriteLine("Logged in.");
                     }
                     else
                     {
@@ -124,7 +124,7 @@ namespace ProCode.PlusHosting.Client
                     {
                         // Logged out successfully!!!
                         isLoggedIn = false;
-                        System.Diagnostics.Debug.WriteLine("Logged out.", "PlusHosting");
+                        Debug.WriteLine("Logged out.");
                     }
                     else
                     {
@@ -329,7 +329,13 @@ namespace ProCode.PlusHosting.Client
                 if (actualValue != null)
                 {
                     if (actualValue != updateResourceRecord.Data)
+                    { 
                         throw new Exception($"Update failed! Data field is different. (sent value) '{updateResourceRecord.Data}' <> '{actualValue}' (actual value).");
+                    }
+                    else
+                    {
+                        Debug.WriteLine($"Resource record updated: {updateResourceRecord}");
+                    }
                 }
                 else
                     throw new Exception($"Can't find record (Type, Name)=({updateResourceRecord.RecordType}, {updateResourceRecord.Name}).");

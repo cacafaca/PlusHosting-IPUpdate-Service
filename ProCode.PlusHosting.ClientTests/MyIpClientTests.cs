@@ -20,5 +20,20 @@ namespace ProCode.PlusHosting.Client.Tests
             Assert.IsNotNull(myIp);
             System.Diagnostics.Debug.WriteLine($"My IP address is {myIp}");            
         }
+
+        [TestMethod()]
+        public void TaskRun()
+        {
+            System.Diagnostics.Debug.WriteLine($"Start of main procedure.");
+            Task.Run(() => 
+            {
+                System.Diagnostics.Debug.WriteLine($"Start of task procedure.");
+                System.Diagnostics.Debug.WriteLine($"Sleep for 1sec in task procedure.");
+                System.Threading.Thread.Sleep(1000);
+                System.Diagnostics.Debug.WriteLine($"Awake in task procedure.");
+                System.Diagnostics.Debug.WriteLine($"Exit from task procedure.");
+            });
+            System.Diagnostics.Debug.WriteLine($"End of main procedure.");
+        }
     }
 }

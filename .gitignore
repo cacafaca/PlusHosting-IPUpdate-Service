@@ -349,3 +349,4 @@ MigrationBackup/
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
 /ProCode.PlusHosting.ClientTests/LoginInfo.json
+/ProCode.PlusHosting.IPUpdate.Service/LoginInfo.json
