@@ -20,12 +20,13 @@ namespace ProCode.PlusHosting.IpUpdate.Service
 
         protected override void OnStart(string[] args)
         {
-            Util.Trace.WriteLine($"Service started: {DateTime.Now}. Interval: {timer.Interval / 1000} sec.");
-
             timer = new System.Timers.Timer(1000 * timerIntervalInseconds)
             {
                 AutoReset = true
             };
+
+            Util.Trace.WriteLine($"Service started: {DateTime.Now}. Interval: {timer.Interval / 1000} sec.");
+
             timer.Elapsed += Timer_Elapsed;
 
             // Do initial check immediately.
