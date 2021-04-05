@@ -29,7 +29,10 @@ namespace ProCode.PlusHosting.IpUpdate.Service
             timer.Elapsed += Timer_Elapsed;
 
             // Do initial check immediately.
-            UpdateCheck();
+            Task.Run(() =>
+            {
+                UpdateCheck();
+            });
 
             timer.Start();
         }
