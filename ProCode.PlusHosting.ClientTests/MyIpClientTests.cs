@@ -13,12 +13,21 @@ namespace ProCode.PlusHosting.Client.Tests
     public class MyIpClientTests
     {
         [TestMethod()]
-        public void GetMyIpTest()
+        public void GetMyIp_whatismyipaddress_com()
         {
             MyIpClient myIpClinet = new MyIpClient();
-            var myIp = myIpClinet.GetMyIp().Result;
+            var myIp = myIpClinet.GetMyIp_whatismyipaddress_com().Result;
             Assert.IsNotNull(myIp);
-            System.Diagnostics.Debug.WriteLine($"My IP address is {myIp}");            
+            System.Diagnostics.Debug.WriteLine($"My IP address is {myIp}");
+        }
+
+        [TestMethod()]
+        public void GetMyIp_ipv4_icanhazip_com()
+        {
+            MyIpClient myIpClinet = new MyIpClient();
+            var myIp = myIpClinet.GetMyIp_ipv4_icanhazip_com().Result;
+            Assert.IsNotNull(myIp);
+            System.Diagnostics.Debug.WriteLine($"My IP address is {myIp}");
         }
 
         [TestMethod()]

@@ -11,7 +11,7 @@ namespace ProCode.PlusHosting.IpUpdate.Service
     public partial class PlusHostingIpUpdateService : ServiceBase
     {
         private System.Timers.Timer timer;
-        private const int timerIntervalInseconds = 30;
+        private const int timerIntervalInseconds = 5 * 60;  // 5 minutes
 
         public PlusHostingIpUpdateService()
         {
@@ -20,19 +20,25 @@ namespace ProCode.PlusHosting.IpUpdate.Service
 
         protected override void OnStart(string[] args)
         {
+            Util.Trace.WriteLine($"Service started: {DateTime.Now}. Interval: {timer.Interval / 1000} sec.");
+
             timer = new System.Timers.Timer(1000 * timerIntervalInseconds)
             {
                 AutoReset = true
             };
             timer.Elapsed += Timer_Elapsed;
+
+            // Do initial check immediately.
+            UpdateCheck();
+
             timer.Start();
-            Util.Debug.WriteLine($"Service Timer started: {DateTime.Now}. Interval: {timer.Interval / 1000}.");
         }
 
         protected override void OnStop()
         {
             timer.Stop();
             timer = null;   // In hope that GC will take it. :)
+            Util.Trace.WriteLine($"Service stopped: {DateTime.Now}.");
         }
 
         private void Timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
@@ -40,50 +46,70 @@ namespace ProCode.PlusHosting.IpUpdate.Service
             Util.Debug.WriteLine($"Service Timer elapsed: {DateTime.Now}");
             Task.Run(() =>
             {
-                MyIpClient myIpClient = new MyIpClient();
-                var myIp = myIpClient.GetMyIp().Result;
+                UpdateCheck();
+            });
+        }
 
-                CPanelDns cpanel = new CPanelDns(new LoginInfo().UserCredential);
-                var services = cpanel.Services.GetServiceListAsync().Result;
-                if (services != null)
+        private void UpdateCheck()
+        {
+            UserCredential userCredential;
+            try
+            {
+                userCredential = new LoginInfo().UserCredential;
+                CPanelDns cpanel = new CPanelDns(userCredential);
+                try
                 {
-                    var fhrService = services.Where(s => s.Name == "FileHosterRepo").FirstOrDefault();
-                    if (fhrService != null)
+                    MyIpClient myIpClient = new MyIpClient();
+                    //var myIp = myIpClient.GetMyIp_whatismyipaddress_com().Result;
+                    var myIp = myIpClient.GetMyIp_ipv4_icanhazip_com().Result;
+
+                    var services = cpanel.Services.GetServiceListAsync().Result;
+                    if (services != null)
                     {
-                        var domains = fhrService.Domains.GetDomainListAsync().Result;
-                        if (domains != null)
+                        var fhrService = services.Where(s => s.Name == "FileHosterRepo").FirstOrDefault();
+                        if (fhrService != null)
                         {
-                            var fhrDomain = domains.Where(d => d.Name == "filehosterrepo.in.rs").FirstOrDefault();
-                            if (fhrDomain != null)
+                            var domains = fhrService.Domains.GetDomainListAsync().Result;
+                            if (domains != null)
                             {
-                                var resourceRecords = fhrDomain.ResourceRecords.GetResourceRecirdListAsync().Result;
-                                if (resourceRecords != null)
+                                var fhrDomain = domains.Where(d => d.Name == "filehosterrepo.in.rs").FirstOrDefault();
+                                if (fhrDomain != null)
                                 {
-                                    var resourceRecordA = resourceRecords.Where(rec => rec.RecordType == "A" && rec.Name == "filehosterrepo.in.rs.").FirstOrDefault();
-                                    if (resourceRecordA != null)
+                                    var resourceRecords = fhrDomain.ResourceRecords.GetResourceRecirdListAsync().Result;
+                                    if (resourceRecords != null)
                                     {
-                                        if (resourceRecordA.Data != myIp.ToString())
+                                        var resourceRecordA = resourceRecords.Where(rec => rec.RecordType == "A" && rec.Name == "filehosterrepo.in.rs.").FirstOrDefault();
+                                        if (resourceRecordA != null)
                                         {
-                                            resourceRecordA.Data = myIp.ToString();
+                                            if (resourceRecordA.Data != myIp.ToString())
+                                            {
+                                                resourceRecordA.Data = myIp.ToString();
+                                            }
+                                            else
+                                            {
+                                                Util.Trace.WriteLine($"No need to update IP Address. (PlusHosting) {resourceRecordA.Data} = {myIp} (my IP).");
+                                            }
                                         }
-                                        else
-                                        {
-                                            Util.Trace.WriteLine($"No need to update IP Address. (PlusHosting) {resourceRecordA.Data} = {myIp} (my IP).");
-                                        }
-                                        //using (EventLog eventLog = new EventLog("Application"))
-                                        //{
-                                        //    eventLog.Source = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name;
-                                        //    eventLog.WriteEntry($"Resource record updated: {resourceRecordA}");
-                                        //};                                                                                
                                     }
                                 }
                             }
                         }
                     }
                 }
+                catch (Exception ex)
+                {
+                    Util.Trace.WriteLine(ex.ToString());
+                }
+                finally
+                {
+                    cpanel.Logout();
+                }
+            }
+            catch (Exception ex)
+            {
+                Util.Trace.WriteLine(ex.ToString());
+            }
 
-                cpanel.Logout();
-            });
         }
 
 #if DEBUG

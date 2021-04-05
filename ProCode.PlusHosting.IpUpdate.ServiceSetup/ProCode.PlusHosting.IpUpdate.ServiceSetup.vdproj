@@ -2339,11 +2339,6 @@
             "AssemblyAsmDisplayName" = "8:HtmlAgilityPack, Version=1.11.32.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_210A8F02E124DAA81F11F8B7494BF571"
-                    {
-                    "Name" = "8:HtmlAgilityPack.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:HtmlAgilityPack.dll"
             "TargetName" = "8:"
@@ -5532,11 +5527,6 @@
             "AssemblyAsmDisplayName" = "8:ProCode.PlusHosting.Client, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_F0C446C2EC206CD398AB7DD03F000217"
-                    {
-                    "Name" = "8:ProCode.PlusHosting.Client.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:ProCode.PlusHosting.Client.dll"
             "TargetName" = "8:"
@@ -5923,7 +5913,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:PlusHosting IP update Service"
         "ProductCode" = "8:{482056DD-83E8-4D25-AF9A-B0CD99F1932F}"
-        "PackageCode" = "8:{4CDA42C5-6DD7-43D6-BF52-CAE7A3A525EE}"
+        "PackageCode" = "8:{2958A468-5A62-48DB-8E26-317FFE0A0366}"
         "UpgradeCode" = "8:{1C9885EF-FA26-4AA7-9184-FB6F939C9C53}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -5938,7 +5928,7 @@
         "Subject" = "8:"
         "ARPCONTACT" = "8:ProCode"
         "Keywords" = "8:"
-        "ARPCOMMENTS" = "8:"
+        "ARPCOMMENTS" = "8:Setup for PlusHosting IP update Service."
         "ARPURLINFOABOUT" = "8:"
         "ARPPRODUCTICON" = "8:"
         "ARPIconIndex" = "3:0"

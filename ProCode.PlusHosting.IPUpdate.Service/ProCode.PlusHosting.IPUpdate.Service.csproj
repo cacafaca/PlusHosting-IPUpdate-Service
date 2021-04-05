@@ -143,8 +143,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <EmbeddedResource Include="LoginInfoDebug.json" />
-    <Content Include="LoginInfoRelease.json">
+    <Content Include="LoginInfoDebug.json" Condition=" '$(Configuration)' == 'Debug' ">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LoginInfoRelease.json" Condition=" '$(Configuration)' == 'Release' ">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="LoginInfoTemplate.json" />

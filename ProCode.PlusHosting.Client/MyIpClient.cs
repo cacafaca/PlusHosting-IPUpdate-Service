@@ -11,7 +11,7 @@ namespace ProCode.PlusHosting.Client
 {
     public class MyIpClient
     {
-        public async Task<IPAddress> GetMyIp()
+        public async Task<IPAddress> GetMyIp_whatismyipaddress_com()
         {
             var handler = new HttpClientHandler
             {
@@ -37,17 +37,16 @@ namespace ProCode.PlusHosting.Client
             //    productName: System.Reflection.Assembly.GetExecutingAssembly().GetName().Name,
             //    productVersion: System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString()));
 
-            //User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:87.0) Gecko/20100101 Firefox/87.0
             client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:87.0) Gecko/20100101 Firefox/87.0"); // Jedi vnago bre!
 
             HttpResponseMessage googleResponse = await client.GetAsync(baseUri);
-            if(googleResponse.StatusCode == HttpStatusCode.OK)
+            if (googleResponse.StatusCode == HttpStatusCode.OK)
             {
                 HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
                 var contentStr = await googleResponse.Content.ReadAsStringAsync();
                 doc.LoadHtml(contentStr);
                 var myIpNode = doc.DocumentNode.SelectSingleNode("/html/body/div/div/div/div/div/article/div/div/div[1]/div/div[2]/div/div/div/div/div/div[2]/div[1]/div[1]/p[2]/span[2]/a");
-                if (myIpNode!= null)
+                if (myIpNode != null)
                 {
                     string myIpStr = myIpNode.InnerText.Trim();
                     return IPAddress.Parse(myIpStr);
@@ -61,6 +60,13 @@ namespace ProCode.PlusHosting.Client
             {
                 throw new Exception($"Server response is not OK: {googleResponse.StatusCode}");
             }
+        }
+        public async Task<IPAddress> GetMyIp_ipv4_icanhazip_com()
+        {            
+            return await Task<IPAddress>.Run(()=> {
+                var externalIp = new WebClient().DownloadString("https://ipv4.icanhazip.com/").TrimEnd();
+                return IPAddress.Parse(externalIp); 
+            });
         }
     }
 }
