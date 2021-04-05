@@ -13,6 +13,15 @@ namespace ProCode.PlusHosting.Client.Tests
     public class MyIpClientTests
     {
         [TestMethod()]
+        public void GetMyIp_www_ipadresa_com()
+        {
+            MyIpClient myIpClinet = new MyIpClient();
+            var myIp = myIpClinet.GetMyIp_www_ipadresa_com().Result;
+            Assert.IsNotNull(myIp);
+            System.Diagnostics.Debug.WriteLine($"My IP address is {myIp}");
+        }
+
+        [TestMethod()]
         public void GetMyIp_whatismyipaddress_com()
         {
             MyIpClient myIpClinet = new MyIpClient();
