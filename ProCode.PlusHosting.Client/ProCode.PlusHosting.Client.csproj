@@ -53,7 +53,7 @@
     <Compile Include="CPanelDnsDomains.cs" />
     <Compile Include="CPanelDnsResourceRecord.cs" />
     <Compile Include="CPanelDnsResourceRecords.cs" />
-    <Compile Include="Debug.cs" />
+    <Compile Include="Util.cs" />
     <Compile Include="ModelUri\DomainResourceRecordUri.cs" />
     <Compile Include="ModelUri\DomainUri.cs" />
     <Compile Include="CPanelDnsServices.cs" />

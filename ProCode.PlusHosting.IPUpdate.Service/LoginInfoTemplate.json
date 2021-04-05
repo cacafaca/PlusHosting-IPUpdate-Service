@@ -1,5 +1,5 @@
 {
-  "comment": "Create file same as this one but without 'Template' in its name, and replace below values.",
+  "comment": "This is a example only file. This is how it should look like file with suffix 'Release', or 'Debug'.",
   "User": "<email_address_here>",
   "Pass": "<password_here>"
 }

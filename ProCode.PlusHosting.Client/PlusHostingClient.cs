@@ -82,7 +82,7 @@ namespace ProCode.PlusHosting.Client
                     {
                         // Logged in successfully!!!
                         isLoggedIn = true;
-                        Debug.WriteLine("Logged in.");
+                        Util.Trace.WriteLine("Logged in.");
                     }
                     else
                     {
@@ -124,7 +124,7 @@ namespace ProCode.PlusHosting.Client
                     {
                         // Logged out successfully!!!
                         isLoggedIn = false;
-                        Debug.WriteLine("Logged out.");
+                        Util.Trace.WriteLine("Logged out.");
                     }
                     else
                     {
@@ -334,7 +334,7 @@ namespace ProCode.PlusHosting.Client
                     }
                     else
                     {
-                        Debug.WriteLine($"Resource record updated: {updateResourceRecord}");
+                        Util.Trace.WriteLine($"Resource record updated: {updateResourceRecord}");
                     }
                 }
                 else

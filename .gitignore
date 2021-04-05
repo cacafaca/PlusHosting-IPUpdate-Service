@@ -350,3 +350,4 @@ MigrationBackup/
 .ionide/
 /ProCode.PlusHosting.ClientTests/LoginInfo.json
 /ProCode.PlusHosting.IPUpdate.Service/LoginInfo.json
+/ProCode.PlusHosting.IPUpdate.Service/LoginInfoDebug.json

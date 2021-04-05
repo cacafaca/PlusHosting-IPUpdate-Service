@@ -143,9 +143,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <EmbeddedResource Include="LoginInfo.json">
+    <EmbeddedResource Include="LoginInfoDebug.json" />
+    <Content Include="LoginInfoRelease.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
+    </Content>
     <None Include="LoginInfoTemplate.json" />
     <None Include="packages.config" />
   </ItemGroup>

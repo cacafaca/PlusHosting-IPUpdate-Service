@@ -7,7 +7,11 @@ namespace ProCode.PlusHosting.IpUpdate.Service
     class LoginInfo
     {
         #region Constants
-        public const string FileName = "LoginInfo.json";
+#if !DEBUG
+        public const string FileName = "LoginInfoRelease.json";
+#else
+        public const string FileName = "LoginInfoDebug.json";
+#endif
         #endregion
 
         public UserCredential UserCredential { get; }

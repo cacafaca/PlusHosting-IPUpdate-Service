@@ -4,7 +4,7 @@ using System.Data;
 using System.Linq;
 using System.ServiceProcess;
 using System.Threading.Tasks;
-using Debug = ProCode.PlusHosting.Client.Debug;
+using Util = ProCode.PlusHosting.Client.Util;
 
 namespace ProCode.PlusHosting.IpUpdate.Service
 {
@@ -26,7 +26,7 @@ namespace ProCode.PlusHosting.IpUpdate.Service
             };
             timer.Elapsed += Timer_Elapsed;
             timer.Start();
-            Debug.WriteLine($"Service Timer started: {DateTime.Now}. Interval: {timer.Interval / 1000}.");
+            Util.Debug.WriteLine($"Service Timer started: {DateTime.Now}. Interval: {timer.Interval / 1000}.");
         }
 
         protected override void OnStop()
@@ -37,7 +37,7 @@ namespace ProCode.PlusHosting.IpUpdate.Service
 
         private void Timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-            Debug.WriteLine($"Service Timer elapsed: {DateTime.Now}");
+            Util.Debug.WriteLine($"Service Timer elapsed: {DateTime.Now}");
             Task.Run(() =>
             {
                 MyIpClient myIpClient = new MyIpClient();
@@ -68,7 +68,7 @@ namespace ProCode.PlusHosting.IpUpdate.Service
                                         }
                                         else
                                         {
-                                            Debug.WriteLine($"No need to update IP Address. (PlusHosting) {resourceRecordA.Data} = {myIp.ToString()} (my IP).");
+                                            Util.Trace.WriteLine($"No need to update IP Address. (PlusHosting) {resourceRecordA.Data} = {myIp} (my IP).");
                                         }
                                         //using (EventLog eventLog = new EventLog("Application"))
                                         //{
