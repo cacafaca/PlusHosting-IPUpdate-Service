@@ -16,7 +16,7 @@ namespace ProCode.PlusHosting.Client.Tests
         public void GetMyIp_whatismyipaddress_com()
         {
             MyIpClient myIpClinet = new MyIpClient();
-            var myIp = myIpClinet.GetMyIp_whatismyipaddress_com().Result;
+            var myIp = myIpClinet.GetMyIp_bot_whatismyipaddress_com().Result;
             Assert.IsNotNull(myIp);
             System.Diagnostics.Debug.WriteLine($"My IP address is {myIp}");
         }
