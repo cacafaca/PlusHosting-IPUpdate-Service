@@ -24,4 +24,4 @@ jobs:
       run: nuget restore ProCode.PlusHosting.IpUpdate.sln
     
     - name: Build solution
-      run: msbuild ProCode.PlusHosting.IpUpdate.sln
+      run: msbuild ProCode.PlusHosting.IpUpdate.sln /p:Configuration=Release
