@@ -1,9 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using ProCode.PlusHosting.Client;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
-using System.Security;
-using System.Threading.Tasks;
+
 
 namespace ProCode.PlusHosting.Client.Tests
 {
@@ -12,7 +9,7 @@ namespace ProCode.PlusHosting.Client.Tests
     {
         private PlusHostingClient GetClientWithLoginInfo()
         {
-            PlusHostingClient client = new PlusHostingClient(new LoginInfo().UserCredential);
+            PlusHostingClient client = new PlusHostingClient(new IpUpdate.Service.LoginInfo().UserCredential);
             return client;
         }
 
@@ -149,7 +146,7 @@ namespace ProCode.PlusHosting.Client.Tests
                     var resourceRecord = resourceRecordList.Where(rec => rec.RecordType == "A" && rec.Data != "127.0.0.1").FirstOrDefault();
                     if (resourceRecord != null)
                     {
-                        string newIpValue = resourceRecord.Data = "46.240.181.102";
+                        string newIpValue = resourceRecord.Data = new MyIpClient().GetMyIp_www_ipadresa_com().Result.ToString();
                         System.Diagnostics.Debug.WriteLine($"Service name / Domain name / Resource record: '{service.Name}' / '{domainUriList[0].Name}'({domainUriList[0].Uri}) / {resourceRecord}");
                         var resourceRecordListNew = client.UpdateCPanelDnsDomainResourceRecordAsync(resourceRecord, domainUriList[0].Uri).Result;
 

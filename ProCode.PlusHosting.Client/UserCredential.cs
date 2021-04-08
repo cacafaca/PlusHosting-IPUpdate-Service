@@ -8,18 +8,31 @@ namespace ProCode.PlusHosting.Client
 {
     public class UserCredential
     {
-        public UserCredential(string username, SecureString password)
-        {
-            this.username = username.Trim();
-            this.password = password;
-        }
+        #region Fields
         private readonly string username;
         private readonly SecureString password;
-        public string GetUsername()
+        #endregion
+
+        #region Constructors
+        public UserCredential(string username, string password)
         {
-            return username;
+            this.username = username.Trim();
+            this.password = new SecureString();
+            foreach (char passChar in password)
+            {
+                this.password.AppendChar(passChar);
+            }
+
         }
-        public string GetPassword()
+        #endregion
+
+        #region Properties
+        public string Username { get { return username; } }
+        public string Password { get { return GetPassword(); } }
+        #endregion
+
+        #region Methods
+        private string GetPassword()
         {
             IntPtr valuePtr = IntPtr.Zero;
             try
@@ -32,5 +45,6 @@ namespace ProCode.PlusHosting.Client
                 Marshal.ZeroFreeGlobalAllocUnicode(valuePtr);
             }
         }
+        #endregion
     }
 }

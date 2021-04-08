@@ -4,7 +4,6 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -65,7 +64,7 @@ namespace ProCode.PlusHosting.Client
                 var temporaryToken = await GetSecurityTokenAsync();
 
                 // Generate content (login params).
-                var requestPayload = $"username={Uri.EscapeDataString(userCredential.GetUsername())}&password={userCredential.GetPassword()}&action=login&security_token={temporaryToken}";
+                var requestPayload = $"username={Uri.EscapeDataString(userCredential.Username)}&password={userCredential.Password}&action=login&security_token={temporaryToken}";
                 HttpContent content = new StringContent(requestPayload);
                 content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");   // This is important!
 

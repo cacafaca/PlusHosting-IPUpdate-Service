@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ProCode.PlusHosting.Client.ModelUri
 {
@@ -18,7 +13,7 @@ namespace ProCode.PlusHosting.Client.ModelUri
         public Uri DeleteUri { get; set; }
         public override string ToString()
         {
-            return $"{RecordType}/{Name}/{Data}";
+            return $"Type={RecordType};Name={Name};Data={Data}";
         }
     }
 }

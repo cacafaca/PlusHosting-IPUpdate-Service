@@ -6,12 +6,12 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("ProCode.SkyHosting.IPUpdate.Service")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Windows service for updating IP address on domain provider Plus Hosting site.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("ProCode.SkyHosting.IPUpdate.Service")]
 [assembly: AssemblyCopyright("Copyright ©  2021")]
-[assembly: AssemblyTrademark("")]
+[assembly: AssemblyTrademark("ProCode")]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible
@@ -33,4 +33,9 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.2")]
+[assembly: AssemblyFileVersion("1.0.0.3")]
+
+// Below directive can force access to internal objects. I need to access LoginInfo class, so I can have unique class. 
+// Before this I had copy of LoginInfo class in Service Test and Client Test projects.
+[assembly: InternalsVisibleTo("ProCode.PlusHosting.ClientTests")]
+[assembly: InternalsVisibleTo("ProCode.PlusHosting.IpUpdate.ServiceTests")]

@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProCode.PlusHosting.IpUpdat
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "ProCode.PlusHosting.IpUpdate.ServiceSetup", "ProCode.PlusHosting.IpUpdate.ServiceSetup\ProCode.PlusHosting.IpUpdate.ServiceSetup.vdproj", "{BC852F00-DBEF-4F51-9B0F-1B08E4285433}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProCode.PlusHosting.IpUpdate.ServiceTests", "ProCode.PlusHosting.IpUpdate.ServiceTests\ProCode.PlusHosting.IpUpdate.ServiceTests.csproj", "{4E0A5626-1A70-49F1-9452-A1FE2CA2BED1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,12 +35,17 @@ Global
 		{7116D044-040C-4AE5-BBF1-B0251D07883C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BC852F00-DBEF-4F51-9B0F-1B08E4285433}.Debug|Any CPU.ActiveCfg = Debug
 		{BC852F00-DBEF-4F51-9B0F-1B08E4285433}.Release|Any CPU.ActiveCfg = Release
+		{4E0A5626-1A70-49F1-9452-A1FE2CA2BED1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E0A5626-1A70-49F1-9452-A1FE2CA2BED1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E0A5626-1A70-49F1-9452-A1FE2CA2BED1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E0A5626-1A70-49F1-9452-A1FE2CA2BED1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{23A2761D-65E1-4E89-990E-769D19243043} = {DE82CE7F-E4C6-4546-BBC0-9D00C6E96EEB}
+		{4E0A5626-1A70-49F1-9452-A1FE2CA2BED1} = {DE82CE7F-E4C6-4546-BBC0-9D00C6E96EEB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A4BCC8D2-4E95-48ED-BB46-00AAE49631E1}

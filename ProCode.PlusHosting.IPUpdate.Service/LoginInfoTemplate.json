@@ -1,5 +1,22 @@
 {
-  "comment": "This is a example only file. This is how it should look like file with suffix 'Release', or 'Debug'.",
-  "User": "<email_address_here>",
-  "Pass": "<password_here>"
+  "PlusHostingLoginInfo": {
+    "comment": "This is a example only file. This is how it should look like file with suffix 'Release', or 'Debug'.",
+    "User": "<email_address_here>",
+    "Pass": "<password_here>"
+  },
+  "MailSmtpInfo": {
+    "Comment1": "Gmail SMTP setup settings:",
+    "Comment2": "   1. SMTP username: Your Gmail address.",
+    "Comment3": "   2. SMTP password: Your Gmail password.",
+    "Comment4": "   3. SMTP server address: smtp.gmail.com.",
+    "Comment5": "   4. Gmail SMTP port: 587.",
+    "Comment6": "   5. SMTP port(SSL): 465.",
+    "Comment7": "   7. SMTP TLS/SSL required: yes.",
+    "Server": "<e.g. smtp.gmail.com. I tested only with Gmail.>",
+    "Port": "<e.g. 587. Tested only with this port for Gmail.>",
+    "EnableSsl": "<true or false>",
+    "User": "<email_address_here>",
+    "Pass": "<password_here>",
+    "ReportTo": "<replace_with_emal_address_where_you_want_to_send>"
+  }
 }

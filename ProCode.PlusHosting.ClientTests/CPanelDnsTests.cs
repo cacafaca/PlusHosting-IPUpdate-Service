@@ -14,7 +14,7 @@ namespace ProCode.PlusHosting.Client.Tests
         [TestMethod()]
         public void Get_All_Services()
         {
-            CPanelDns cpanel = new CPanelDns(new LoginInfo().UserCredential);
+            CPanelDns cpanel = new CPanelDns(new IpUpdate.Service.LoginInfo().UserCredential);
             var services = cpanel.Services.GetServiceListAsync().Result;
             System.Diagnostics.Debug.WriteLine($"Number of services: {services.Count}");
             Assert.AreNotEqual(0, services.Count);
@@ -30,7 +30,7 @@ namespace ProCode.PlusHosting.Client.Tests
         [TestMethod()]
         public void Get_All_Domains()
         {
-            CPanelDns cpanel = new CPanelDns(new LoginInfo().UserCredential);
+            CPanelDns cpanel = new CPanelDns(new IpUpdate.Service.LoginInfo().UserCredential);
             
             // HTTPS get service list
             var services = cpanel.Services.GetServiceListAsync().Result;
@@ -60,7 +60,7 @@ namespace ProCode.PlusHosting.Client.Tests
         [TestMethod()]
         public void Get_All_Records()   // Most comprehensive test.
         {
-            CPanelDns cpanel = new CPanelDns(new LoginInfo().UserCredential);
+            CPanelDns cpanel = new CPanelDns(new IpUpdate.Service.LoginInfo().UserCredential);
 
             // HTTPS get service list
             var services = cpanel.Services.GetServiceListAsync().Result;

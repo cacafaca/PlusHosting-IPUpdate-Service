@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("ProCode.PlusHosting.ClientTests")]
+[assembly: AssemblyTitle("ProCode.PlusHosting.IpUpdate.ServiceTests")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("ProCode.PlusHosting.ClientTests")]
+[assembly: AssemblyProduct("ProCode.PlusHosting.IpUpdate.ServiceTests")]
 [assembly: AssemblyCopyright("Copyright ©  2021")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("23a2761d-65e1-4e89-990e-769d19243043")]
+[assembly: Guid("4e0a5626-1a70-49f1-9452-a1fe2ca2bed1")]
 
 // Version information for an assembly consists of the following four values:
 //

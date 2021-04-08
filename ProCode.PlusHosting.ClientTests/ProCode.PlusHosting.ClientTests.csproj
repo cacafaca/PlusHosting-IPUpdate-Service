@@ -139,23 +139,22 @@
   </Choose>
   <ItemGroup>
     <Compile Include="CPanelDnsTests.cs" />
-    <Compile Include="LoginInfo.cs" />
     <Compile Include="MyIpClientTests.cs" />
     <Compile Include="PlusHostingClientTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="LoginInfoTemplate.json" />
-    <EmbeddedResource Include="LoginInfo.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ProCode.PlusHosting.Client\ProCode.PlusHosting.Client.csproj">
       <Project>{19106095-b9bb-49f9-ac18-21ff7d3d7509}</Project>
       <Name>ProCode.PlusHosting.Client</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ProCode.PlusHosting.IPUpdate.Service\ProCode.PlusHosting.IpUpdate.Service.csproj">
+      <Project>{7116d044-040c-4ae5-bbf1-b0251d07883c}</Project>
+      <Name>ProCode.PlusHosting.IpUpdate.Service</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>

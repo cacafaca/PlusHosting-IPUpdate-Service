@@ -10,8 +10,8 @@ namespace ProCode.PlusHosting.IpUpdate.Service
 {
     public partial class PlusHostingIpUpdateService : ServiceBase
     {
-        private System.Timers.Timer timer;
         private const int timerIntervalInseconds = 5 * 60;  // 5 minutes
+        private System.Timers.Timer timer;
 
         public PlusHostingIpUpdateService()
         {
@@ -56,11 +56,10 @@ namespace ProCode.PlusHosting.IpUpdate.Service
 
         private void UpdateCheck()
         {
-            UserCredential userCredential;
             try
             {
-                userCredential = new LoginInfo().UserCredential;
-                CPanelDns cpanel = new CPanelDns(userCredential);
+                LoginInfo loginInfo = new LoginInfo();
+                CPanelDns cpanel = new CPanelDns(loginInfo.UserCredential);
                 try
                 {
                     MyIpClient myIpClient = new MyIpClient();
@@ -87,7 +86,21 @@ namespace ProCode.PlusHosting.IpUpdate.Service
                                         {
                                             if (resourceRecordA.Data != myIp.ToString())
                                             {
+                                                string oldIp = resourceRecordA.Data;
                                                 resourceRecordA.Data = myIp.ToString();
+                                                using (var emailSend = new EmailSend(loginInfo.MailSmtpInfo))
+                                                {
+                                                    emailSend.Send("IP address updated [Plus Hosting]",
+                                                         $@"Hi,
+
+New IP ({resourceRecordA.Data}) address updated on site www.plus.rs.
+
+Old IP: {oldIp}
+
+Sincerely yours,
+Plus Hosting IP Updater Windows Service"
+                                                         );
+                                                }
                                             }
                                             else
                                             {
