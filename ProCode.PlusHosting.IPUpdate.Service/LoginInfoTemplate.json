@@ -1,6 +1,6 @@
 {
+  "Comment": "Copy this file (LoginInfoTemplate.json) to LoginInfo.json, in the same folder, and change values.",
   "PlusHostingLoginInfo": {
-    "comment": "This is a example only file. This is how it should look like file with suffix 'Release', or 'Debug'.",
     "User": "<email_address_here>",
     "Pass": "<password_here>"
   },
