@@ -54,7 +54,7 @@ namespace ProCode.PlusHosting.IpUpdate.Service
             });
         }
 
-        private void UpdateCheck()
+        private async void UpdateCheck()
         {
             try
             {
@@ -64,53 +64,57 @@ namespace ProCode.PlusHosting.IpUpdate.Service
                 {
                     MyIpClient myIpClient = new MyIpClient();
                     //var myIp = myIpClient.GetMyIp_whatismyipaddress_com().Result;
-                    var myIp = myIpClient.GetMyIp_ipv4_icanhazip_com().Result;
+                    var myIp = await myIpClient.GetMyIp_ipv4_icanhazip_com();
 
-                    var services = cpanel.Services.GetServiceListAsync().Result;
+                    var services = await cpanel.Services.GetServiceListAsync();
                     if (services != null)
                     {
-                        var fhrService = services.Where(s => s.Name == "FileHosterRepo").FirstOrDefault();
-                        if (fhrService != null)
+                        foreach (var configService in loginInfo.PlusHostingRecords)
                         {
-                            var domains = fhrService.Domains.GetDomainListAsync().Result;
-                            if (domains != null)
+                            var plusHostingService = services.Where(s => s.Name == configService.ServiceName).FirstOrDefault();
+                            if (plusHostingService != null)
                             {
-                                var fhrDomain = domains.Where(d => d.Name == "filehosterrepo.in.rs").FirstOrDefault();
-                                if (fhrDomain != null)
+                                var plusHostingDomains = await plusHostingService.Domains.GetDomainListAsync();
+                                if (plusHostingDomains != null)
                                 {
-                                    var resourceRecords = fhrDomain.ResourceRecords.GetResourceRecirdListAsync().Result;
-                                    if (resourceRecords != null)
+                                    var plusHostingDomain = plusHostingDomains.Where(d => d.Name == configService.DomainName).FirstOrDefault();
+                                    if (plusHostingDomain != null)
                                     {
-                                        var resourceRecordA = resourceRecords.Where(rec => rec.RecordType == "A" && rec.Name == "filehosterrepo.in.rs.").FirstOrDefault();
-                                        if (resourceRecordA != null)
+                                        var plusHostingResourceRecords = await plusHostingDomain.ResourceRecords.GetResourceRecirdListAsync();
+                                        if (plusHostingResourceRecords != null)
                                         {
-                                            if (resourceRecordA.Data != myIp.ToString())
+                                            var plusHostingResourceRecord = plusHostingResourceRecords.Where(rec => rec.RecordType == configService.ResourceRecord.Type && rec.Name == configService.ResourceRecord.Name).FirstOrDefault();
+                                            if (plusHostingResourceRecord != null)
                                             {
-                                                string oldIp = resourceRecordA.Data;
-                                                resourceRecordA.Data = myIp.ToString();
-                                                using (var emailSend = new EmailSend(loginInfo.MailSmtpInfo))
+                                                if (plusHostingResourceRecord.Data != myIp.ToString())
                                                 {
-                                                    emailSend.Send("IP address updated [Plus Hosting]",
-                                                         $@"Hi,
+                                                    string oldIp = plusHostingResourceRecord.Data;
+                                                    plusHostingResourceRecord.Data = myIp.ToString();
+                                                    using (var emailSend = new EmailSend(loginInfo.MailSmtpInfo))
+                                                    {
+                                                        emailSend.Send("IP address updated [Plus Hosting]",
+                                                             $@"Hi,
 
-New IP ({resourceRecordA.Data}) address updated on site www.plus.rs.
+New IP ({plusHostingResourceRecord.Data}) address updated on site www.plus.rs.
 
 Old IP: {oldIp}
 
 Sincerely yours,
 Plus Hosting IP Updater Windows Service"
-                                                         );
+                                                             );
+                                                    }
                                                 }
-                                            }
-                                            else
-                                            {
-                                                Util.Trace.WriteLine($"No need to update IP Address. (PlusHosting) {resourceRecordA.Data} = {myIp} (my IP).");
+                                                else
+                                                {
+                                                    Util.Trace.WriteLine($"No need to update IP Address. (PlusHosting) {plusHostingResourceRecord.Data} = {myIp} (my IP).");
+                                                }
                                             }
                                         }
                                     }
                                 }
                             }
                         }
+
                     }
                 }
                 catch (Exception ex)

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ProCode.PlusHosting.IpUpdate.Service
 {
-    public class EmailSend : IDisposable
+    class EmailSend : IDisposable
     {
         #region Constants
         private const string senderName = "Plus Hosting IP Update Service";

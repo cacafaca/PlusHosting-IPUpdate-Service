@@ -1,5 +1,7 @@
-﻿using Microsoft.Extensions.Configuration;
-using ProCode.PlusHosting.Client;
+﻿using ProCode.PlusHosting.Client;
+using System;
+using System.IO;
+using System.Text.Json;
 
 namespace ProCode.PlusHosting.IpUpdate.Service
 {
@@ -17,27 +19,26 @@ namespace ProCode.PlusHosting.IpUpdate.Service
         #region Constructors
         public LoginInfo()
         {
-            var config = new ConfigurationBuilder()
-                .SetBasePath(System.AppDomain.CurrentDomain.BaseDirectory)
-                .AddJsonFile(ConfigFileName).Build();
-
-            UserCredential = new UserCredential(config.GetSection($"{PlusHostingLoginInfoSectionName}:User").Value,
-                config.GetSection($"{PlusHostingLoginInfoSectionName}:Pass").Value);
-
-            MailSmtpInfo = new MailSmtpInfo(
-                server: config.GetSection($"{MailSmtpInfoSectionName}:Server").Value,
-                port: int.Parse(config.GetSection($"{MailSmtpInfoSectionName}:Port").Value),
-                enableSsl: bool.Parse(config.GetSection($"{MailSmtpInfoSectionName}:EnableSsl").Value ?? "true"),
-                user: config.GetSection($"{MailSmtpInfoSectionName}:User").Value,
-                pass: config.GetSection($"{MailSmtpInfoSectionName}:Pass").Value,
-                reportTo: config.GetSection($"{MailSmtpInfoSectionName}:ReportTo").Value
-            );
+            try
+            {
+                LoginInfoPoco.Rootobject loginInfo = JsonSerializer.Deserialize<LoginInfoPoco.Rootobject>(File.ReadAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ConfigFileName)));
+                UserCredential = new UserCredential(loginInfo.PlusHostingLoginInfo.User, loginInfo.PlusHostingLoginInfo.Pass);
+                PlusHostingRecords = loginInfo.PlusHostingRecords;
+                MailSmtpInfo = new MailSmtpInfo(loginInfo.MailSmtpInfo);
+                Util.Trace.WriteLine($"Success reading configuration file: {ConfigFileName}");
+            }
+            catch (Exception ex)
+            {
+                Util.Trace.WriteLine($"Error reading configuration file: {ex.Message}");
+                throw ex;
+            }
         }
         #endregion
 
         #region Properties
         public UserCredential UserCredential { get; }
         public MailSmtpInfo MailSmtpInfo { get; }
+        public LoginInfoPoco.PlusHostingRecord[] PlusHostingRecords { get; }
         #endregion
 
 

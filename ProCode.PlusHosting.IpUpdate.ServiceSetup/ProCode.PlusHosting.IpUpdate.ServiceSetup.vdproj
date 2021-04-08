@@ -6462,7 +6462,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_F0D80A52A9CC4C22AE477C5793946B7E"
             {
-            "SourcePath" = "8:..\\ProCode.PlusHosting.IPUpdate.Service\\obj\\Release\\ProCode.PlusHosting.IPUpdate.Service.exe"
+            "SourcePath" = "8:..\\ProCode.PlusHosting.IpUpdate.Service\\obj\\Release\\ProCode.PlusHosting.IpUpdate.Service.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_94013EF39748455BA1A090F868A61ADC"

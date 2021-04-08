@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{7116D044-040C-4AE5-BBF1-B0251D07883C}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>ProCode.PlusHosting.IPUpdate.Service</RootNamespace>
-    <AssemblyName>ProCode.PlusHosting.IPUpdate.Service</AssemblyName>
+    <RootNamespace>ProCode.PlusHosting.IpUpdate.Service</RootNamespace>
+    <AssemblyName>ProCode.PlusHosting.IpUpdate.Service</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -31,6 +31,9 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Resources\PlusHostingFavicon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=5.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -68,6 +71,7 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.IO, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.IO.4.3.0\lib\net462\System.IO.dll</HintPath>
       <Private>True</Private>
@@ -128,6 +132,7 @@
   <ItemGroup>
     <Compile Include="EmailSend.cs" />
     <Compile Include="LoginInfo.cs" />
+    <Compile Include="LoginInfoPoco.cs" />
     <Compile Include="MailSmtpInfo.cs" />
     <Compile Include="PlusHostingIpUpdateService.cs">
       <SubType>Component</SubType>
@@ -143,8 +148,14 @@
       <DependentUpon>ProjectInstaller.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\PlusHostingFavicon.ico" />
     <None Include="App.config" />
     <Content Include="LoginInfo.json" Condition=" '$(Configuration)' == 'Debug' ">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -160,6 +171,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ProjectInstaller.resx">
       <DependentUpon>ProjectInstaller.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

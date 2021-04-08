@@ -152,7 +152,7 @@
       <Project>{19106095-b9bb-49f9-ac18-21ff7d3d7509}</Project>
       <Name>ProCode.PlusHosting.Client</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ProCode.PlusHosting.IPUpdate.Service\ProCode.PlusHosting.IpUpdate.Service.csproj">
+    <ProjectReference Include="..\ProCode.PlusHosting.IpUpdate.Service\ProCode.PlusHosting.IpUpdate.Service.csproj">
       <Project>{7116d044-040c-4ae5-bbf1-b0251d07883c}</Project>
       <Name>ProCode.PlusHosting.IpUpdate.Service</Name>
     </ProjectReference>

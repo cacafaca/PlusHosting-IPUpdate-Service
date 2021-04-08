@@ -9,7 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{DE82CE7F
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProCode.PlusHosting.Client", "ProCode.PlusHosting.Client\ProCode.PlusHosting.Client.csproj", "{19106095-B9BB-49F9-AC18-21FF7D3D7509}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProCode.PlusHosting.IpUpdate.Service", "ProCode.PlusHosting.IPUpdate.Service\ProCode.PlusHosting.IpUpdate.Service.csproj", "{7116D044-040C-4AE5-BBF1-B0251D07883C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProCode.PlusHosting.IpUpdate.Service", "ProCode.PlusHosting.IpUpdate.Service\ProCode.PlusHosting.IpUpdate.Service.csproj", "{7116D044-040C-4AE5-BBF1-B0251D07883C}"
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "ProCode.PlusHosting.IpUpdate.ServiceSetup", "ProCode.PlusHosting.IpUpdate.ServiceSetup\ProCode.PlusHosting.IpUpdate.ServiceSetup.vdproj", "{BC852F00-DBEF-4F51-9B0F-1B08E4285433}"
 EndProject

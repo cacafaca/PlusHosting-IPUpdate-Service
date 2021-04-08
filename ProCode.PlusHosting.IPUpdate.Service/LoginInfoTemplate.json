@@ -4,6 +4,24 @@
     "User": "<email_address_here>",
     "Pass": "<password_here>"
   },
+  "PlusHostingRecords": [
+    {
+      "ServiceName": "<ServiceName1>",
+      "DomainName": "<DomainName1>",
+      "ResourceRecord": {
+        "Type": "A",
+        "Name": "<ResourceRecordName1>"
+      }
+    },
+    {
+      "ServiceName": "<ServiceName1>",
+      "DomainName": "<DomainName2>",
+      "ResourceRecord": {
+        "Type": "A",
+        "Name": "<ResourceRecordName2>"
+      }
+    }
+  ],
   "MailSmtpInfo": {
     "Comment1": "Gmail SMTP setup settings:",
     "Comment2": "   1. SMTP username: Your Gmail address.",

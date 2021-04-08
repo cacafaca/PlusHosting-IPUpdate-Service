@@ -33,9 +33,10 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.3")]
+[assembly: AssemblyFileVersion("1.0.0.4")]
 
-// Below directive can force access to internal objects. I need to access LoginInfo class, so I can have unique class. 
+// Below directive can force access to internal objects. I need to access LoginInfo class,
+// so I can have class only in one place. 
 // Before this I had copy of LoginInfo class in Service Test and Client Test projects.
 [assembly: InternalsVisibleTo("ProCode.PlusHosting.ClientTests")]
 [assembly: InternalsVisibleTo("ProCode.PlusHosting.IpUpdate.ServiceTests")]

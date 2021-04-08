@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ProCode.PlusHosting.IpUpdate.Service
 {
-    public class MailSmtpInfo
+    class MailSmtpInfo
     {
         #region Fields
         readonly string server;
@@ -20,18 +20,18 @@ namespace ProCode.PlusHosting.IpUpdate.Service
         #endregion
 
         #region Constructors
-        public MailSmtpInfo(string server, int port, bool enableSsl, string user, string pass, string reportTo)
+        public MailSmtpInfo(LoginInfoPoco.MailSmtpInfo mailSmtpInfo)
         {
-            this.server = server;
-            this.port = port;
-            this.enableSsl = enableSsl;
-            this.user = user;
+            this.server = mailSmtpInfo.Server;
+            this.port = mailSmtpInfo.Port;
+            this.enableSsl = mailSmtpInfo.EnableSsl;
+            this.user = mailSmtpInfo.User;
             this.pass = new SecureString();
-            foreach (char passChar in pass)
+            foreach (char passChar in mailSmtpInfo.Pass)
             {
                 this.pass.AppendChar(passChar);
             }
-            this.reportTo = reportTo;
+            this.reportTo = mailSmtpInfo.ReportTo;
         }
         #endregion
 
