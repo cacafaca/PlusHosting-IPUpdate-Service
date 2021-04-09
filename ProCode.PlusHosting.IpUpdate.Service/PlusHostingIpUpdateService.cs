@@ -10,12 +10,19 @@ namespace ProCode.PlusHosting.IpUpdate.Service
 {
     public partial class PlusHostingIpUpdateService : ServiceBase
     {
+        #region Constants
         private const int timerIntervalInseconds = 5 * 60;  // 5 minutes
+        #endregion
+
+        #region Fields
         private System.Timers.Timer timer;
+        readonly LoginInfo loginInfo;
+        #endregion
 
         public PlusHostingIpUpdateService()
         {
             InitializeComponent();
+            loginInfo = new LoginInfo();
         }
 
         protected override void OnStart(string[] args)
@@ -58,7 +65,6 @@ namespace ProCode.PlusHosting.IpUpdate.Service
         {
             try
             {
-                LoginInfo loginInfo = new LoginInfo();
                 CPanelDns cpanel = new CPanelDns(loginInfo.UserCredential);
                 try
                 {
