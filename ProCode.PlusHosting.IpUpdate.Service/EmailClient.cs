@@ -9,27 +9,21 @@ using System.Threading.Tasks;
 
 namespace ProCode.PlusHosting.IpUpdate.Service
 {
-    class EmailSend : IDisposable
+    class EmailClient
     {
         #region Constants
         private const string senderName = "Plus Hosting IP Update Service";
         #endregion
 
         #region Fields
+        private static bool readyToSendMail;
         private readonly MailSmtpInfo mailInfo;
-        private readonly SmtpClient smtpClient;
-        private bool readyToSendMail;
         #endregion
 
         #region Constructor
-        public EmailSend(MailSmtpInfo mailInfo)
+        public EmailClient(MailSmtpInfo mailInfo)
         {
             this.mailInfo = mailInfo;
-            smtpClient = new SmtpClient(mailInfo.Server, mailInfo.Port)
-            {
-                Credentials = new NetworkCredential(mailInfo.User, mailInfo.Pass),
-                EnableSsl = mailInfo.EnableSsl
-            };
             readyToSendMail = true;    // Assume that previous mail is sent at the beginning.
         }
         #endregion
@@ -45,22 +39,28 @@ namespace ProCode.PlusHosting.IpUpdate.Service
                     {
                         try
                         {
+                            SmtpClient smtpClient = new SmtpClient(mailInfo.Server, mailInfo.Port)
+                            {
+                                Credentials = new NetworkCredential(mailInfo.User, mailInfo.Pass),
+                                EnableSsl = mailInfo.EnableSsl
+                            };
+
                             smtpClient.Send(new MailMessage($"{senderName} <{mailInfo.User}>", mailInfo.ReportTo, subject, body));
                             readyToSendMail = true;
+                            Client.Util.Trace.WriteLine($"Mail sent to {mailInfo.ReportTo}.");
                         }
-                        catch
+                        catch (Exception ex)
                         {
                             readyToSendMail = false;
+                            Client.Util.Trace.WriteLine($"Can't sent email to {mailInfo.ReportTo}. Subject: {subject}.");
+                            Client.Util.Trace.WriteLine($"Error message: {ex.Message}");
+                            Client.Util.Trace.WriteLine(ex.StackTrace);
+                            System.Threading.Thread.Sleep(new TimeSpan(0, 1, 0));                            
                         }
                     }
                     while (!readyToSendMail);
                 });
             }
-        }
-
-        public void Dispose()
-        {
-            smtpClient.Dispose();
         }
         #endregion
     }

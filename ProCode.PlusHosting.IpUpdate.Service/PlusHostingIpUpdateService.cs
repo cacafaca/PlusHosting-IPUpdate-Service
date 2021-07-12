@@ -96,19 +96,18 @@ namespace ProCode.PlusHosting.IpUpdate.Service
                                                 {
                                                     string oldIp = plusHostingResourceRecord.Data;
                                                     plusHostingResourceRecord.Data = myIp.ToString();
-                                                    using (var emailSend = new EmailSend(loginInfo.MailSmtpInfo))
-                                                    {
-                                                        emailSend.Send("IP address updated [Plus Hosting]",
-                                                             $@"Hi,
+
+                                                    // Notify IP address change.
+                                                    var emailClient = new EmailClient(loginInfo.MailSmtpInfo);
+                                                    emailClient.Send("IP address updated [Plus Hosting]",
+$@"Hi,
 
 New IP ({plusHostingResourceRecord.Data}) address updated on site www.plus.rs.
 
 Old IP: {oldIp}
 
 Sincerely yours,
-Plus Hosting IP Updater Windows Service"
-                                                             );
-                                                    }
+Plus Hosting IP Updater Windows Service");
                                                 }
                                                 else
                                                 {
@@ -120,12 +119,14 @@ Plus Hosting IP Updater Windows Service"
                                 }
                             }
                         }
-
                     }
                 }
                 catch (Exception ex)
                 {
                     Util.Trace.WriteLine(ex.ToString());
+
+                    var emailSend = new EmailClient(loginInfo.MailSmtpInfo);
+                    emailSend.Send("Error processing IP update", ex.Message + "\n" + ex.ToString());
                 }
                 finally
                 {

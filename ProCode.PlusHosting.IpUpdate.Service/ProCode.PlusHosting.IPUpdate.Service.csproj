@@ -130,7 +130,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EmailSend.cs" />
+    <Compile Include="EmailClient.cs" />
     <Compile Include="LoginInfo.cs" />
     <Compile Include="LoginInfoPoco.cs" />
     <Compile Include="MailSmtpInfo.cs" />

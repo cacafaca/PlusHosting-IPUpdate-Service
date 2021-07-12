@@ -1036,7 +1036,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_A62D6E650BEB2DB6F47EA9EA7988EC21"
+        "OwnerKey" = "8:_F0D80A52A9CC4C22AE477C5793946B7E"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -1151,6 +1151,12 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_3DBFAC3FD2B279C232CE6A7944783C7D"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_A62D6E650BEB2DB6F47EA9EA7988EC21"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -1801,12 +1807,6 @@
         "OwnerKey" = "8:_9674EACC5A79F0750485569CA086DBCC"
         "MsmSig" = "8:_UNDEFINED"
         }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_F0D80A52A9CC4C22AE477C5793946B7E"
-        "MsmSig" = "8:_UNDEFINED"
-        }
     }
     "Configurations"
     {
@@ -1825,6 +1825,14 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+            }
         }
         "Release"
         {
@@ -1841,6 +1849,22 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.7.2"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.7.2"
+                    }
+                }
+            }
         }
     }
     "Deployable"
@@ -2339,6 +2363,11 @@
             "AssemblyAsmDisplayName" = "8:HtmlAgilityPack, Version=1.11.32.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_210A8F02E124DAA81F11F8B7494BF571"
+                    {
+                    "Name" = "8:HtmlAgilityPack.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:HtmlAgilityPack.dll"
             "TargetName" = "8:"
@@ -5527,6 +5556,11 @@
             "AssemblyAsmDisplayName" = "8:ProCode.PlusHosting.Client, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_F0C446C2EC206CD398AB7DD03F000217"
+                    {
+                    "Name" = "8:ProCode.PlusHosting.Client.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:ProCode.PlusHosting.Client.dll"
             "TargetName" = "8:"
@@ -5913,7 +5947,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:PlusHosting IP update Service"
         "ProductCode" = "8:{482056DD-83E8-4D25-AF9A-B0CD99F1932F}"
-        "PackageCode" = "8:{2958A468-5A62-48DB-8E26-317FFE0A0366}"
+        "PackageCode" = "8:{B9A5E16C-67DB-4DD9-B2A1-F44D1F682ED4}"
         "UpgradeCode" = "8:{1C9885EF-FA26-4AA7-9184-FB6F939C9C53}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
