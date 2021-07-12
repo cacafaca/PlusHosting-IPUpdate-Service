@@ -18,6 +18,7 @@ namespace ProCode.PlusHosting.IpUpdate.Service
         #region Fields
         private readonly MailSmtpInfo mailInfo;
         private readonly SmtpClient smtpClient;
+        private bool readyToSendMail;
         #endregion
 
         #region Constructor
@@ -29,13 +30,32 @@ namespace ProCode.PlusHosting.IpUpdate.Service
                 Credentials = new NetworkCredential(mailInfo.User, mailInfo.Pass),
                 EnableSsl = mailInfo.EnableSsl
             };
+            readyToSendMail = true;    // Assume that previous mail is sent at the beginning.
         }
         #endregion
 
         #region Methods
         public void Send(string subject, string body)
         {
-            smtpClient.Send(new MailMessage($"{senderName} <{mailInfo.User}>", mailInfo.ReportTo, subject, body));
+            if (readyToSendMail)        // Accept only if previous mail is sent.
+            {
+                Task.Run(() =>
+                {
+                    do
+                    {
+                        try
+                        {
+                            smtpClient.Send(new MailMessage($"{senderName} <{mailInfo.User}>", mailInfo.ReportTo, subject, body));
+                            readyToSendMail = true;
+                        }
+                        catch
+                        {
+                            readyToSendMail = false;
+                        }
+                    }
+                    while (!readyToSendMail);
+                });
+            }
         }
 
         public void Dispose()
