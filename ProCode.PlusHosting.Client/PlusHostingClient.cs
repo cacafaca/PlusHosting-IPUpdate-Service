@@ -206,7 +206,7 @@ namespace ProCode.PlusHosting.Client
                 }
                 else
                 {
-                    throw new Exception("Can't find table with cPanels.");
+                    throw new Exception("Can't find table with DNS services.");
                 }
             }
             else
@@ -253,7 +253,7 @@ namespace ProCode.PlusHosting.Client
                 }
                 else
                 {
-                    throw new Exception("Can't find table with cPanels.");
+                    throw new Exception("Can't find table with DNS domains.");
                 }
 
                 if (securityToken == string.Empty)
@@ -351,7 +351,8 @@ namespace ProCode.PlusHosting.Client
         {
             IList<ModelUri.DomainResourceRecordUri> cpanelDnsDomainResourceRecordList = new List<ModelUri.DomainResourceRecordUri>();
 
-            var allTablesFormNode = doc.DocumentNode.SelectSingleNode($"//form[@action='{domainUri.LocalPath.TrimStart('/')}']"); // <form> tag is container for all tables (SOA, NS, ...)
+            var domainXPath = $"//form[@action='{domainUri.LocalPath.TrimStart('/')}']";
+            var allTablesFormNode = doc.DocumentNode.SelectSingleNode(domainXPath); // <form> tag is container for all tables (SOA, NS, ...)
             if (allTablesFormNode != null)
             {
                 foreach (var tableNode in allTablesFormNode.ChildNodes.Where(x => x.NodeType == HtmlAgilityPack.HtmlNodeType.Element))
@@ -386,7 +387,7 @@ namespace ProCode.PlusHosting.Client
             }
             else
             {
-                throw new Exception("Can't find table with cPanels.");
+                throw new Exception($"Can't find XPath='{domainXPath}'.\nCan't generate resource record list.\nOuterHtml:\n" + doc.DocumentNode.OuterHtml);
             }
 
             return cpanelDnsDomainResourceRecordList;
