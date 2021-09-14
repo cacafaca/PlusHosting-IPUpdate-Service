@@ -1832,6 +1832,14 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.7.2"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.7.2"
+                    }
+                }
             }
         }
         "Release"
@@ -5947,7 +5955,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:PlusHosting IP update Service"
         "ProductCode" = "8:{482056DD-83E8-4D25-AF9A-B0CD99F1932F}"
-        "PackageCode" = "8:{B9A5E16C-67DB-4DD9-B2A1-F44D1F682ED4}"
+        "PackageCode" = "8:{F65CA8A9-063A-48DE-AB76-FBFF1C6172C3}"
         "UpgradeCode" = "8:{1C9885EF-FA26-4AA7-9184-FB6F939C9C53}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
