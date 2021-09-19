@@ -14,10 +14,13 @@ namespace ProCode.PlusHosting.Client
         #region Constants
         #endregion
 
-        HttpClient client;
+        #region Fields
+        HttpClientEnhanced client;
         readonly PlusHostingUriDictionary uriDictionary;
         readonly UserCredential userCredential;
+        #endregion
 
+        #region Constrictors
         public PlusHostingClient(UserCredential userCredential)
         {
             isLoggedIn = false;
@@ -25,15 +28,16 @@ namespace ProCode.PlusHosting.Client
             uriDictionary = new PlusHostingUriDictionary();
             client = GetNewClient();
         }
+        #endregion
 
-        private HttpClient GetNewClient()
+        private HttpClientEnhanced GetNewClient()
         {
             var handler = new HttpClientHandler
             {
                 AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
                 CookieContainer = new CookieContainer()
             };
-            client = new HttpClient(handler);
+            client = new HttpClientEnhanced(handler);
 
             client.DefaultRequestHeaders.Clear();
             client.DefaultRequestHeaders.Add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
@@ -177,7 +181,6 @@ namespace ProCode.PlusHosting.Client
             List<ModelUri.ServiceUri> cpanelDnsServiceUriList = new List<ModelUri.ServiceUri>();
 
             // Send GET command to fetch list of cPanels. 
-
             HttpResponseMessage responseMsg = await client.GetAsync(uriDictionary.GetCPanelListUri());
             if (responseMsg.StatusCode == HttpStatusCode.OK)
             {
@@ -328,7 +331,7 @@ namespace ProCode.PlusHosting.Client
                 if (actualValue != null)
                 {
                     if (actualValue != updateResourceRecord.Data)
-                    { 
+                    {
                         throw new Exception($"Update failed! Data field is different. (sent value) '{updateResourceRecord.Data}' <> '{actualValue}' (actual value).");
                     }
                     else
@@ -387,7 +390,20 @@ namespace ProCode.PlusHosting.Client
             }
             else
             {
-                throw new Exception($"Can't find XPath='{domainXPath}'.\nCan't generate resource record list.\nOuterHtml:\n" + doc.DocumentNode.OuterHtml);
+                string formatedUriHistory = string.Join(Environment.NewLine, client.UriHistory
+                    .OrderByDescending(uh => uh.Time)
+                    .Select(uh => $"{uh.Uri.AbsoluteUri}({uh.Time})"));
+                throw new Exception($@"Can't find XPath='{domainXPath}'.
+
+Can't generate resource record list.
+
+Uri history:
+{formatedUriHistory}
+
+OuterHtml:
+{doc.DocumentNode.OuterHtml}
+*** End of message ***
+*** Happy debugging ***");
             }
 
             return cpanelDnsDomainResourceRecordList;
