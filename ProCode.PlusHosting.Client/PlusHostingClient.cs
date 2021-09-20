@@ -392,7 +392,7 @@ namespace ProCode.PlusHosting.Client
             {
                 string formatedUriHistory = string.Join(Environment.NewLine, client.UriHistory
                     .OrderByDescending(uh => uh.Time)
-                    .Select(uh => $"{uh.Uri.AbsoluteUri}({uh.Time})"));
+                    .Select(uh => $"{uh.Uri.AbsoluteUri} ({uh.Time})"));
                 throw new Exception($@"Can't find XPath='{domainXPath}'.
 
 Can't generate resource record list.
