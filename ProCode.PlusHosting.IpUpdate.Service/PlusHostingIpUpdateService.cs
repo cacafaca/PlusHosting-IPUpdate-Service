@@ -126,7 +126,7 @@ Plus Hosting IP Updater Windows Service");
                     Util.Trace.WriteLine(ex.ToString());
 
                     var emailSend = new EmailClient(loginInfo.MailSmtpInfo);
-                    emailSend.Send("Error processing IP update", ex.Message + "\n" + ex.ToString());
+                    emailSend.Send("Error processing IP update", ex.ToString());
                 }
                 finally
                 {

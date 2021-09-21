@@ -151,7 +151,7 @@ namespace ProCode.PlusHosting.Client
         {
             string token = string.Empty;
 
-            HttpResponseMessage responseMsg = await client.GetAsync(uriDictionary.GetLoginUri());
+            HttpResponseMessage responseMsg = await client.GetAsync(uriDictionary.GetBase());
             if (responseMsg.StatusCode == HttpStatusCode.OK)
             {
                 HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
@@ -390,20 +390,7 @@ namespace ProCode.PlusHosting.Client
             }
             else
             {
-                string formatedUriHistory = string.Join(Environment.NewLine, client.UriHistory
-                    .OrderByDescending(uh => uh.Time)
-                    .Select(uh => $"{uh.Uri.AbsoluteUri} ({uh.Time})"));
-                throw new Exception($@"Can't find XPath='{domainXPath}'.
-
-Can't generate resource record list.
-
-Uri history:
-{formatedUriHistory}
-
-OuterHtml:
-{doc.DocumentNode.OuterHtml}
-*** End of message ***
-*** Happy debugging ***");
+                throw new ClientException($"Can't find XPath='{domainXPath}'.", client, doc.DocumentNode.OuterHtml);
             }
 
             return cpanelDnsDomainResourceRecordList;

@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClientException.cs" />
     <Compile Include="CPanelDns.cs" />
     <Compile Include="CPanelDnsDomains.cs" />
     <Compile Include="CPanelDnsResourceRecord.cs" />
