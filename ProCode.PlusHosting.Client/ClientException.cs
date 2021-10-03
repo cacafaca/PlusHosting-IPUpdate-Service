@@ -21,6 +21,10 @@ namespace ProCode.PlusHosting.Client
         }
         #endregion
 
+        #region Properties
+        public string Html { get { return html; } }
+        #endregion
+
         #region Methods
         public override string ToString()
         {
@@ -30,9 +34,6 @@ $@"*** Message ***
 
 *** Uri history ***
 {history}
-
-*** Html source ***
-{html}
 
 *** Stack trace ***
 {StackTrace}";            

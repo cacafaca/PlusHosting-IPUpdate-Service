@@ -29,12 +29,15 @@ namespace ProCode.PlusHosting.IpUpdate.Service
         #endregion
 
         #region Methods
-        public void Send(string subject, string body)
+        public void Send(string subject, string body, Dictionary<string, System.IO.Stream> attachmentDictionary = null)
         {
             if (readyToSendMail)        // Accept only if previous mail is sent.
-            {
+            {                
+#if !DEBUG
+                // Fire and forget only in RElease mode, because it is easier to perform unit tests.      
                 Task.Run(() =>
                 {
+#endif
                     do
                     {
                         try
@@ -44,8 +47,19 @@ namespace ProCode.PlusHosting.IpUpdate.Service
                                 Credentials = new NetworkCredential(mailInfo.User, mailInfo.Pass),
                                 EnableSsl = mailInfo.EnableSsl
                             };
+                            var message = new MailMessage($"{senderName} <{mailInfo.User}>", mailInfo.ReportTo, subject, body);
 
-                            smtpClient.Send(new MailMessage($"{senderName} <{mailInfo.User}>", mailInfo.ReportTo, subject, body));
+                            // Attachments.
+                            if (attachmentDictionary != null)
+                            {
+                                foreach (var attachment in attachmentDictionary)
+                                {
+                                    message.Attachments.Add(new Attachment(attachment.Value, attachment.Key));
+                                }
+                            }
+
+                            smtpClient.Send(message);
+                            smtpClient.Dispose();
                             readyToSendMail = true;
                             Client.Util.Trace.WriteLine($"Mail sent to {mailInfo.ReportTo}.");
                         }
@@ -55,13 +69,16 @@ namespace ProCode.PlusHosting.IpUpdate.Service
                             Client.Util.Trace.WriteLine($"Can't sent email to {mailInfo.ReportTo}. Subject: {subject}.");
                             Client.Util.Trace.WriteLine($"Error message: {ex.Message}");
                             Client.Util.Trace.WriteLine(ex.StackTrace);
-                            System.Threading.Thread.Sleep(new TimeSpan(0, 1, 0));                            
+                            System.Threading.Thread.Sleep(new TimeSpan(0, 1, 0));
                         }
                     }
                     while (!readyToSendMail);
+#if !DEBUG
+
                 });
+#endif
             }
         }
-        #endregion
+#endregion
     }
 }
