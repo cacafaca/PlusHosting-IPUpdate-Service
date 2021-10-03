@@ -16,7 +16,7 @@ namespace ProCode.PlusHosting.Client
         #region Constructors
         public ClientException(string message, HttpClientEnhanced client, string html) : base(message)
         {
-            history = string.Join(Environment.NewLine, client.UriHistory.OrderByDescending(uh => uh.Time).Select(uh => $"{uh.Uri.AbsoluteUri} ({uh.Time})"));
+            history = string.Join(Environment.NewLine, client.UriHistory.OrderByDescending(uh => uh.Time).Select(uh => $"{uh.Uri.AbsoluteUri} ({uh.Time:hh:mm:ss})"));
             this.html = html;
         }
         #endregion

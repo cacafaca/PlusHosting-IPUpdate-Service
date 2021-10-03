@@ -128,7 +128,7 @@ Plus Hosting IP Updater Windows Service");
                     emailSend.Send("Error processing IP update", ex.ToString(), 
                         new System.Collections.Generic.Dictionary<string, System.IO.Stream> 
                         {
-                            {"LastPage", new System.IO.MemoryStream(System.Text.Encoding.UTF8.GetBytes(ex.Html)) }
+                            {"LastPage.html", new System.IO.MemoryStream(System.Text.Encoding.UTF8.GetBytes(ex.Html)) }
                         });
                 }
                 catch (Exception ex)
