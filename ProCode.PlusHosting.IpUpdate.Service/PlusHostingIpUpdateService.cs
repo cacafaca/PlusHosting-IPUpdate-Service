@@ -12,6 +12,9 @@ namespace ProCode.PlusHosting.IpUpdate.Service
     {
         #region Constants
         private const int timerIntervalInseconds = 5 * 60;  // 5 minutes
+        const string emailErrorSubject = "Error processing IP update [Plus Hosting]";
+        const string emailSuccesseIPUpdateSubject = "Success IP address update [Plus Hosting]";
+        const string emailErrorAttachedFileName = "LastPage.html";
         #endregion
 
         #region Fields
@@ -69,8 +72,7 @@ namespace ProCode.PlusHosting.IpUpdate.Service
                 try
                 {
                     MyIpClient myIpClient = new MyIpClient();
-                    //var myIp = myIpClient.GetMyIp_whatismyipaddress_com().Result;
-                    var myIp = await myIpClient.GetMyIp_ipv4_icanhazip_com();
+                    var myIp = await myIpClient.GetMyIp();
 
                     var services = await cpanel.Services.GetServiceListAsync();
                     if (services != null)
@@ -99,7 +101,7 @@ namespace ProCode.PlusHosting.IpUpdate.Service
 
                                                     // Notify IP address change.
                                                     var emailClient = new EmailClient(loginInfo.MailSmtpInfo);
-                                                    emailClient.Send("IP address updated [Plus Hosting]",
+                                                    emailClient.Send(emailSuccesseIPUpdateSubject,
 $@"Hi,
 
 New IP ({plusHostingResourceRecord.Data}) address updated on site www.plus.rs.
@@ -121,21 +123,21 @@ Plus Hosting IP Updater Windows Service");
                         }
                     }
                 }
-                catch(ClientException ex)
+                catch (ClientException ex)
                 {
                     Util.Trace.WriteLine(ex.ToString());
                     var emailSend = new EmailClient(loginInfo.MailSmtpInfo);
-                    emailSend.Send("Error processing IP update", ex.ToString(), 
-                        new System.Collections.Generic.Dictionary<string, System.IO.Stream> 
+                    emailSend.Send(emailErrorSubject, ex.ToString(), ex.Html != null ?
+                        new System.Collections.Generic.Dictionary<string, System.IO.Stream>
                         {
-                            {"LastPage.html", new System.IO.MemoryStream(System.Text.Encoding.UTF8.GetBytes(ex.Html)) }
-                        });
+                            {emailErrorAttachedFileName, new System.IO.MemoryStream(System.Text.Encoding.UTF8.GetBytes(ex.Html)) }
+                        } : null);
                 }
                 catch (Exception ex)
                 {
                     Util.Trace.WriteLine(ex.ToString());
                     var emailSend = new EmailClient(loginInfo.MailSmtpInfo);
-                    emailSend.Send("Error processing IP update", ex.ToString());
+                    emailSend.Send(emailErrorSubject, ex.ToString());
                 }
                 finally
                 {

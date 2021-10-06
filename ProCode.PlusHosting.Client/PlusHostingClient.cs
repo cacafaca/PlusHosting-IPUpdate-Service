@@ -68,7 +68,11 @@ namespace ProCode.PlusHosting.Client
                 var temporaryToken = await GetSecurityTokenAsync();
 
                 // Generate content (login params).
-                var requestPayload = $"username={Uri.EscapeDataString(userCredential.Username)}&password={userCredential.Password}&action=login&security_token={temporaryToken}";
+                var requestPayload = string.Join("&",
+                    "username=" + Uri.EscapeDataString(userCredential.Username),
+                    "password=" + userCredential.Password,
+                    "action=login",
+                    "security_token=" + temporaryToken);
                 HttpContent content = new StringContent(requestPayload);
                 content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");   // This is important!
 
@@ -102,7 +106,7 @@ namespace ProCode.PlusHosting.Client
                 }
                 else
                 {
-                    throw new NotImplementedException("Throw some meaningful exception.");
+                    throw new ClientException("Failed logging. Response status: " + responseMsg.StatusCode, client, null);
                 }
             }
         }
@@ -149,23 +153,27 @@ namespace ProCode.PlusHosting.Client
         /// <returns></returns>
         public async Task<string> GetSecurityTokenAsync()
         {
-            string token = string.Empty;
-
             HttpResponseMessage responseMsg = await client.GetAsync(uriDictionary.GetBase());
+            string token;
             if (responseMsg.StatusCode == HttpStatusCode.OK)
             {
                 HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
                 var contentStr = await responseMsg.Content.ReadAsStringAsync();
                 doc.LoadHtml(contentStr);
-                var tokenNode = doc.DocumentNode.SelectSingleNode("//input[@name='security_token']");
+                const string securityTokenXPath = "//input[@name='security_token']";
+                var tokenNode = doc.DocumentNode.SelectSingleNode(securityTokenXPath);
                 if (tokenNode != null)
                 {
                     token = tokenNode.Attributes["value"].Value;
                 }
+                else
+                {
+                    throw new ClientException("Can't find XPath: " + securityTokenXPath, client, null);
+                }
             }
             else
             {
-                throw new Exception("Can't read security token.");
+                throw new ClientException("Failed reading base page to get security token. Response status: " + responseMsg.StatusCode, client, null);
             }
 
             return token;

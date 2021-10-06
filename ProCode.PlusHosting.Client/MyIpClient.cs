@@ -53,5 +53,24 @@ namespace ProCode.PlusHosting.Client
                 return !string.IsNullOrEmpty(publicIpAddress) ? IPAddress.Parse(publicIpAddress) : null;
             });
         }
+
+        public async Task<IPAddress> GetMyIp()
+        {
+            try
+            {
+                return await GetMyIp_www_ipadresa_com();
+            }
+            catch
+            {
+                try
+                {
+                    return await GetMyIp_ipv4_icanhazip_com();
+                }
+                catch
+                {
+                    return await GetMyIp_bot_whatismyipaddress_com();   // Do not catch, this last attempt. It will be catch elsewhere.
+                }
+            }
+        }
     }
 }
