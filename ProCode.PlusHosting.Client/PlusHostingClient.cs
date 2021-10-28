@@ -12,6 +12,7 @@ namespace ProCode.PlusHosting.Client
     public class PlusHostingClient
     {
         #region Constants
+        const int maxRetrysForUrl = 3;
         #endregion
 
         #region Fields
@@ -294,19 +295,33 @@ namespace ProCode.PlusHosting.Client
             IList<ModelUri.DomainResourceRecordUri> cpanelDnsDomainResourceRecordList;
 
             // Send GET command to fetch list of Domains for cPanel.
-
-            HttpResponseMessage responseMsg = await client.GetAsync(domainUri);
-            if (responseMsg.StatusCode == HttpStatusCode.OK)
+            int retry = 0;
+            while(true)
             {
-                HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
-                var contentStr = await responseMsg.Content.ReadAsStringAsync();
-                doc.LoadHtml(contentStr);
+                try
+                {
+                    HttpResponseMessage responseMsg = await client.GetAsync(domainUri);
+                    if (responseMsg.StatusCode == HttpStatusCode.OK)
+                    {
+                        HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
+                        var contentStr = await responseMsg.Content.ReadAsStringAsync();
+                        doc.LoadHtml(contentStr);
 
-                cpanelDnsDomainResourceRecordList = GenerateResourceRecordListFromHtml(domainUri, doc);
-            }
-            else
-            {
-                throw new Exception($"Response Status Code in not OK. StatusCode={responseMsg.StatusCode}.");
+                        cpanelDnsDomainResourceRecordList = GenerateResourceRecordListFromHtml(domainUri, doc);
+                        break;  // Break out of the loop if all good.
+                    }
+                    else
+                    {
+                        throw new Exception($"Response Status Code in not OK. StatusCode={responseMsg.StatusCode}.");
+                    }
+                }
+                catch (ClientException ex)
+                {
+                    if (retry < maxRetrysForUrl)
+                        retry++;
+                    else
+                        throw ex;   // Give a chance three times to read and then re-throw exception.
+                }
             }
 
             return cpanelDnsDomainResourceRecordList ?? new List<ModelUri.DomainResourceRecordUri>();
