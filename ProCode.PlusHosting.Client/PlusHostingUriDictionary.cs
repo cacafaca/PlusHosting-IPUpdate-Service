@@ -15,7 +15,7 @@ namespace ProCode.PlusHosting.Client
         }
         internal Uri GetLoginUri()
         {
-            return new Uri(baseUri, "/index.php");
+            return new Uri(baseUri, "/root/default");
         }
 
         internal Uri GetLogoutUri()

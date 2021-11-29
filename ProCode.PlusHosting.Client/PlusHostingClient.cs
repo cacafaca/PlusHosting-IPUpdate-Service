@@ -85,8 +85,8 @@ namespace ProCode.PlusHosting.Client
                     var responseContent = await responseMsg.Content.ReadAsStringAsync();
                     doc.LoadHtml(responseContent);
 
-                    var logoutAnchor = doc.DocumentNode.SelectSingleNode("//a[@href='?action=logout' and @class='main-menu-login']");
-                    if (logoutAnchor != null && logoutAnchor.InnerText.Trim().ToLower() == "logout")
+                    var logoutAnchor = doc.DocumentNode.SelectSingleNode("/html/body/nav[1]/div[2]/div[2]/ul/li[5]/span/span/span[1]/small");
+                    if (logoutAnchor != null && logoutAnchor.InnerText.Trim() == "Dobrodošao")
                     {
                         // Logged in successfully!!!
                         isLoggedIn = true;
@@ -127,8 +127,8 @@ namespace ProCode.PlusHosting.Client
                     HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
                     var contentStr = await responseMsg.Content.ReadAsStringAsync();
                     doc.LoadHtml(contentStr);
-                    var loginAnchor = doc.DocumentNode.SelectSingleNode("//a[@href='https://portal.plus.rs/root' and @class='main-menu-login']");
-                    if (loginAnchor != null && loginAnchor.InnerText.Trim().ToLower() == "login")
+                    var loginAnchor = doc.DocumentNode.SelectSingleNode("/html/body/nav[1]/div[2]/div[2]/ul/li[3]/a/small");
+                    if (loginAnchor != null && loginAnchor.InnerText.Trim() == "Ulogujte se / Register")
                     {
                         // Logged out successfully!!!
                         isLoggedIn = false;
@@ -136,7 +136,7 @@ namespace ProCode.PlusHosting.Client
                     }
                     else
                     {
-                        throw new Exception("Can't determine if Login succeeded.");
+                        throw new Exception("Can't determine if Logout succeeded.");
                     }
                 }
                 else
@@ -196,7 +196,7 @@ namespace ProCode.PlusHosting.Client
                 HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
                 var contentStr = await responseMsg.Content.ReadAsStringAsync();
                 doc.LoadHtml(contentStr);
-                var cpanelTableBodyNode = doc.DocumentNode.SelectSingleNode("/html/body/div[2]/section/div/div/div[2]/table/tbody");
+                var cpanelTableBodyNode = doc.DocumentNode.SelectSingleNode("//tbody[@id=\"updater\"]");
                 if (cpanelTableBodyNode != null)
                 {
                     foreach (var row in cpanelTableBodyNode.ChildNodes.Where(x => x.NodeType == HtmlAgilityPack.HtmlNodeType.Element))
@@ -207,7 +207,7 @@ namespace ProCode.PlusHosting.Client
                             var anchorNode = productNode.SelectSingleNode(".//a");  // dot(.) in ".//a" means search from current node, and not from root document node.
                             if (anchorNode != null)
                             {
-                                var cpanelDnsNameNode = productNode.SelectSingleNode(".//i[@class='slb']");
+                                var cpanelDnsNameNode = productNode.SelectSingleNode(".//i[2]");
                                 if (cpanelDnsNameNode != null)
                                 {
                                     cpanelDnsServiceUriList.Add(new ModelUri.ServiceUri(new Uri(uriDictionary.GetBase(), anchorNode.Attributes["href"].Value), cpanelDnsNameNode.InnerText.Trim()));
@@ -246,7 +246,7 @@ namespace ProCode.PlusHosting.Client
                 HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
                 var contentStr = await responseMsg.Content.ReadAsStringAsync();
                 doc.LoadHtml(contentStr);
-                var cpanelTableBodyNode = doc.DocumentNode.SelectSingleNode("/html/body/div[2]/section/div/div/div/form/table[1]/tbody[1]");  // /html/body/div[2]/section/div/div/div/form/table[1]/tbody[1]
+                var cpanelTableBodyNode = doc.DocumentNode.SelectSingleNode("/html/body/div[4]/section/div/form/table[1]/tbody[1]");  
                 if (cpanelTableBodyNode != null)
                 {
                     foreach (var rowNode in cpanelTableBodyNode.ChildNodes.Where(x => x.NodeType == HtmlAgilityPack.HtmlNodeType.Element))
