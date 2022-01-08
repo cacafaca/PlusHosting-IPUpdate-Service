@@ -12,7 +12,7 @@ namespace ProCode.PlusHosting.Client
     public class PlusHostingClient
     {
         #region Constants
-        const int maxRetrysForUrl = 3;
+        const int maxRetrysForUrl = 1;
         #endregion
 
         #region Fields
@@ -295,7 +295,7 @@ namespace ProCode.PlusHosting.Client
             IList<ModelUri.DomainResourceRecordUri> cpanelDnsDomainResourceRecordList;
 
             // Send GET command to fetch list of Domains for cPanel.
-            int retry = 0;
+            int retry = 1;
             while(true)
             {
                 try
@@ -377,7 +377,7 @@ namespace ProCode.PlusHosting.Client
         {
             IList<ModelUri.DomainResourceRecordUri> cpanelDnsDomainResourceRecordList = new List<ModelUri.DomainResourceRecordUri>();
 
-            var domainXPath = $"//form[@action='{domainUri.LocalPath.TrimStart('/')}']";
+            var domainXPath = $"//form[@action='{domainUri.LocalPath.TrimStart('/')} and @method='POST']";
             var allTablesFormNode = doc.DocumentNode.SelectSingleNode(domainXPath); // <form> tag is container for all tables (SOA, NS, ...)
             if (allTablesFormNode != null)
             {

@@ -15,6 +15,7 @@ namespace ProCode.PlusHosting.IpUpdate.Service
         const string emailErrorSubject = "Error processing IP update [Plus Hosting]";
         const string emailSuccesseIPUpdateSubject = "Success IP address update [Plus Hosting]";
         const string emailErrorAttachedFileName = "LastPage.html";
+        const int maxRetryCount = 3;
         #endregion
 
         #region Fields
@@ -82,27 +83,32 @@ namespace ProCode.PlusHosting.IpUpdate.Service
                             var plusHostingService = services.Where(s => s.Name == configService.ServiceName).FirstOrDefault();
                             if (plusHostingService != null)
                             {
-                                var plusHostingDomains = await plusHostingService.Domains.GetDomainListAsync();
-                                if (plusHostingDomains != null)
+                                try
                                 {
-                                    var plusHostingDomain = plusHostingDomains.Where(d => d.Name == configService.DomainName).FirstOrDefault();
-                                    if (plusHostingDomain != null)
+                                    int retryCount = 1;
+                                    while (retryCount < maxRetryCount)
                                     {
-                                        var plusHostingResourceRecords = await plusHostingDomain.ResourceRecords.GetResourceRecirdListAsync();
-                                        if (plusHostingResourceRecords != null)
+                                        var plusHostingDomains = await plusHostingService.Domains.GetDomainListAsync();
+                                        if (plusHostingDomains != null)
                                         {
-                                            var plusHostingResourceRecord = plusHostingResourceRecords.Where(rec => rec.RecordType == configService.ResourceRecord.Type && rec.Name == configService.ResourceRecord.Name).FirstOrDefault();
-                                            if (plusHostingResourceRecord != null)
+                                            var plusHostingDomain = plusHostingDomains.Where(d => d.Name == configService.DomainName).FirstOrDefault();
+                                            if (plusHostingDomain != null)
                                             {
-                                                if (plusHostingResourceRecord.Data != myIp.ToString())
+                                                var plusHostingResourceRecords = await plusHostingDomain.ResourceRecords.GetResourceRecirdListAsync();
+                                                if (plusHostingResourceRecords != null)
                                                 {
-                                                    string oldIp = plusHostingResourceRecord.Data;
-                                                    plusHostingResourceRecord.Data = myIp.ToString();
+                                                    var plusHostingResourceRecord = plusHostingResourceRecords.Where(rec => rec.RecordType == configService.ResourceRecord.Type && rec.Name == configService.ResourceRecord.Name).FirstOrDefault();
+                                                    if (plusHostingResourceRecord != null)
+                                                    {
+                                                        if (plusHostingResourceRecord.Data != myIp.ToString())
+                                                        {
+                                                            string oldIp = plusHostingResourceRecord.Data;
+                                                            plusHostingResourceRecord.Data = myIp.ToString();
 
-                                                    // Notify IP address change.
-                                                    var emailClient = new EmailClient(loginInfo.MailSmtpInfo);
-                                                    emailClient.Send(emailSuccesseIPUpdateSubject,
-$@"Hi,
+                                                            // Notify IP address change.
+                                                            var emailClient = new EmailClient(loginInfo.MailSmtpInfo);
+                                                            emailClient.Send(emailSuccesseIPUpdateSubject,
+        $@"Hi,
 
 New IP ({plusHostingResourceRecord.Data}) address updated on site www.plus.rs.
 
@@ -110,14 +116,20 @@ Old IP: {oldIp}
 
 Sincerely yours,
 Plus Hosting IP Updater Windows Service");
-                                                }
-                                                else
-                                                {
-                                                    Util.Trace.WriteLine($"No need to update IP Address. (PlusHosting) {plusHostingResourceRecord.Data} = {myIp} (my IP).");
+                                                        }
+                                                        else
+                                                        {
+                                                            Util.Trace.WriteLine($"No need to update IP Address. (PlusHosting) {plusHostingResourceRecord.Data} = {myIp} (my IP).");
+                                                        }
+                                                    }
                                                 }
                                             }
                                         }
                                     }
+                                }
+                                catch (Exception ex)
+                                {
+
                                 }
                             }
                         }
