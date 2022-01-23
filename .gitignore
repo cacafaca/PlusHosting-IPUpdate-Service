@@ -352,3 +352,4 @@ MigrationBackup/
 /ProCode.PlusHosting.IpUpdate.Client/LoginInfo.json
 /ProCode.PlusHosting.Client/LoginInfo.json
 /ProCode.PlusHosting.ClientTests/LoginInfo.json
+/ProCode.PlusHosting.IpUpdate.ServiceTests/LoginInfo.json

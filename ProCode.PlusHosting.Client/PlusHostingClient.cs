@@ -85,8 +85,8 @@ namespace ProCode.PlusHosting.Client
                     var responseContent = await responseMsg.Content.ReadAsStringAsync();
                     doc.LoadHtml(responseContent);
 
-                    var logoutAnchor = doc.DocumentNode.SelectSingleNode("/html/body/nav[1]/div[2]/div[2]/ul/li[5]/span/span/span[1]/small");
-                    if (logoutAnchor != null && logoutAnchor.InnerText.Trim() == "Dobrodošao")
+                    var possibleRcogintions = doc.DocumentNode.SelectNodes("//small[@class='text-gray']");
+                    if (possibleRcogintions != null && possibleRcogintions.Where(x => x.InnerText.Trim() == "Dobrodošao").Count() > 0)
                     {
                         // Logged in successfully!!!
                         isLoggedIn = true;
@@ -94,8 +94,8 @@ namespace ProCode.PlusHosting.Client
                     }
                     else
                     {
-                        var loginAnchor = doc.DocumentNode.SelectSingleNode("//a[@href='https://portal.plus.rs/root' and @class='main-menu-login']");
-                        if (loginAnchor != null && loginAnchor.InnerText.Trim().ToLower() == "login")
+
+                        if (doc.DocumentNode.SelectNodes("//script[@type='text/javascript']")?.Where(node => node.InnerText.Contains("ili lozinka su neta")).FirstOrDefault() != null)
                         {
                             throw new Exception("Wrong user and pass.");
                         }
@@ -127,8 +127,8 @@ namespace ProCode.PlusHosting.Client
                     HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
                     var contentStr = await responseMsg.Content.ReadAsStringAsync();
                     doc.LoadHtml(contentStr);
-                    var loginAnchor = doc.DocumentNode.SelectSingleNode("/html/body/nav[1]/div[2]/div[2]/ul/li[3]/a/small");
-                    if (loginAnchor != null && loginAnchor.InnerText.Trim() == "Ulogujte se / Register")
+                    var navigationNode = doc.DocumentNode.SelectNodes("/html/body/nav[1]");
+                    if (navigationNode != null && navigationNode[0].ChildNodes.Where(node => node.InnerText.Contains("Ulogujte se / Register")).Count() > 0)
                     {
                         // Logged out successfully!!!
                         isLoggedIn = false;
@@ -243,10 +243,10 @@ namespace ProCode.PlusHosting.Client
             HttpResponseMessage responseMsg = await client.GetAsync(serviceUri);
             if (responseMsg.StatusCode == HttpStatusCode.OK)
             {
-                HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
                 var contentStr = await responseMsg.Content.ReadAsStringAsync();
+                HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
                 doc.LoadHtml(contentStr);
-                var cpanelTableBodyNode = doc.DocumentNode.SelectSingleNode("/html/body/div[4]/section/div/form/table[1]/tbody[1]");  
+                var cpanelTableBodyNode = doc.DocumentNode.SelectSingleNode("/html/body/div[4]/section/div/form/table[1]/tbody[1]");
                 if (cpanelTableBodyNode != null)
                 {
                     foreach (var rowNode in cpanelTableBodyNode.ChildNodes.Where(x => x.NodeType == HtmlAgilityPack.HtmlNodeType.Element))
@@ -296,15 +296,15 @@ namespace ProCode.PlusHosting.Client
 
             // Send GET command to fetch list of Domains for cPanel.
             int retry = 1;
-            while(true)
+            while (true)
             {
                 try
                 {
                     HttpResponseMessage responseMsg = await client.GetAsync(domainUri);
                     if (responseMsg.StatusCode == HttpStatusCode.OK)
                     {
-                        HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
                         var contentStr = await responseMsg.Content.ReadAsStringAsync();
+                        HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
                         doc.LoadHtml(contentStr);
 
                         cpanelDnsDomainResourceRecordList = GenerateResourceRecordListFromHtml(domainUri, doc);
@@ -377,7 +377,7 @@ namespace ProCode.PlusHosting.Client
         {
             IList<ModelUri.DomainResourceRecordUri> cpanelDnsDomainResourceRecordList = new List<ModelUri.DomainResourceRecordUri>();
 
-            var domainXPath = $"//form[@action='{domainUri.LocalPath.TrimStart('/')} and @method='POST']";
+            var domainXPath = $"//form[@action='{domainUri.LocalPath.TrimStart('/')}' and @method='POST']";
             var allTablesFormNode = doc.DocumentNode.SelectSingleNode(domainXPath); // <form> tag is container for all tables (SOA, NS, ...)
             if (allTablesFormNode != null)
             {

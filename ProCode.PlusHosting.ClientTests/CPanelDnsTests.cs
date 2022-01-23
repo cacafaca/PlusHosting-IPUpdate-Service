@@ -26,8 +26,7 @@ namespace ProCode.PlusHosting.Client.Tests
                     Assert.IsNotNull(domain.ResourceRecords.List.Where(rr => rr.RecordType == CPanelDnsResourceRecord.TypeA).FirstOrDefault());
                 }
             }
-            cpanel.Logout();
-            Assert.IsFalse(cpanel.IsLoggedIn);
+            cpanel = null;
         }
     }
 }

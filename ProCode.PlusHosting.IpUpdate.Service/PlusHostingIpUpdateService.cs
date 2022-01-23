@@ -127,10 +127,6 @@ Plus Hosting IP Updater Windows Service");
                 var emailSend = new EmailClient(loginInfo.MailSmtpInfo);
                 emailSend.Send(emailErrorSubject, ex.ToString());
             }
-            finally
-            {
-                cpanel.Logout();
-            }
         }
 
 #if DEBUG

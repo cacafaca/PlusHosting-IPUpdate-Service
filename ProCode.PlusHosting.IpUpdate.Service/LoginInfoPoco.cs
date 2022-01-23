@@ -29,10 +29,10 @@
         {
             public string ServiceName { get; set; }
             public string DomainName { get; set; }
-            public Resourcerecord ResourceRecord { get; set; }
+            public ResourceRecord ResourceRecord { get; set; }
         }
 
-        public class Resourcerecord
+        public class ResourceRecord
         {
             public string Type { get; set; }
             public string Name { get; set; }

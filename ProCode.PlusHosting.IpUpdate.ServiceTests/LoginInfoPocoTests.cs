@@ -17,5 +17,42 @@ namespace ProCode.PlusHosting.IpUpdate.Service.Tests
             Assert.IsNotNull(loginInfo.PlusHostingRecords);
             Assert.IsNotNull(loginInfo.MailSmtpInfo);
         }
+
+        [TestMethod()]
+        public void Generate_Json()
+        {
+            LoginInfoPoco.Rootobject loginInfo = new LoginInfoPoco.Rootobject
+            {
+                PlusHostingLoginInfo = new LoginInfoPoco.PlusHostingLoginInfo
+                {
+                    User = "User1",
+                    Pass = "Pass1"
+                },
+                PlusHostingRecords = new LoginInfoPoco.PlusHostingRecord[]
+                {
+                    new LoginInfoPoco.PlusHostingRecord
+                    {
+                        ServiceName="Service1",
+                        DomainName ="domain.rs",
+                        ResourceRecord=new LoginInfoPoco.ResourceRecord
+                        {
+                            Name ="domain.rs",
+                            Type="A"
+                        }
+                    }
+                },
+                MailSmtpInfo = new LoginInfoPoco.MailSmtpInfo
+                {
+                    Server = "smtp.gmail.cpm",
+                    Port = 587,
+                    EnableSsl = true,
+                    Pass = "Pass2",
+                    User = "mail@gmail.com",
+                    ReportTo = "some@mail.com"
+                }
+            };
+            var jsonStr = JsonSerializer.Serialize(loginInfo);
+            File.WriteAllText("LoginInfo_Generated.json", jsonStr);
+        }
     }
 }

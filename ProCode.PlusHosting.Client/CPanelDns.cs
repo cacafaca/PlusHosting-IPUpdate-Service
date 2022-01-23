@@ -41,11 +41,6 @@ namespace ProCode.PlusHosting.Client
             await _services.ReadAsync();
         }
 
-        public void Logout()
-        {
-            client.LogoutAsync().Wait();
-        }
-
         public async Task UpdateAsync(System.Net.IPAddress ip)
         {
             //            var services = await Services.GetServiceListAsync();
