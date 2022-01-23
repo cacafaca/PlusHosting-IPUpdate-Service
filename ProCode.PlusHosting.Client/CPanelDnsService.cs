@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace ProCode.PlusHosting.Client
 {
     public class CPanelDnsService
     {
         #region Fields
-        public string Name { get; }
-        private readonly CPanelDnsDomains domains;
+        private readonly CPanelDnsDomains _domains;
         private readonly Uri serviceUri;
         #endregion
 
@@ -18,12 +16,13 @@ namespace ProCode.PlusHosting.Client
                 throw new ArgumentNullException(nameof(client));
             this.serviceUri = serviceUri ?? throw new ArgumentNullException(nameof(serviceUri));
             Name = name;
-            domains = new CPanelDnsDomains(client, serviceUri);
+            _domains = new CPanelDnsDomains(client, serviceUri);
         }
         #endregion
 
         #region Properties
-        public CPanelDnsDomains Domains { get { return domains; } }
+        public string Name { get; }
+        public CPanelDnsDomains Domains { get { return _domains; } }
         #endregion
 
         #region Methods

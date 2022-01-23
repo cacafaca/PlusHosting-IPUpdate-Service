@@ -1,47 +1,43 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ProCode.PlusHosting.IpUpdate.Service
 {
-    class MailSmtpInfo
+    public class MailSmtpInfo
     {
         #region Fields
-        readonly string server;
-        readonly int port;
-        readonly bool enableSsl;
-        readonly string user;
-        readonly SecureString pass;
-        readonly string reportTo;
+        readonly string _server;
+        readonly int _port;
+        readonly bool _enableSsl;
+        readonly string _user;
+        readonly SecureString _pass;
+        readonly string _reportTo;
         #endregion
 
         #region Constructors
         public MailSmtpInfo(LoginInfoPoco.MailSmtpInfo mailSmtpInfo)
         {
-            this.server = mailSmtpInfo.Server;
-            this.port = mailSmtpInfo.Port;
-            this.enableSsl = mailSmtpInfo.EnableSsl;
-            this.user = mailSmtpInfo.User;
-            this.pass = new SecureString();
+            _server = mailSmtpInfo.Server;
+            _port = mailSmtpInfo.Port;
+            _enableSsl = mailSmtpInfo.EnableSsl;
+            _user = mailSmtpInfo.User;
+            _pass = new SecureString();
             foreach (char passChar in mailSmtpInfo.Pass)
             {
-                this.pass.AppendChar(passChar);
+                this._pass.AppendChar(passChar);
             }
-            this.reportTo = mailSmtpInfo.ReportTo;
+            this._reportTo = mailSmtpInfo.ReportTo;
         }
         #endregion
 
         #region Properties
-        public string Server { get { return server; } }
-        public int Port { get { return port; } }
-        public bool EnableSsl { get { return enableSsl; } }
-        public string User { get { return user; } }
+        public string Server { get { return _server; } }
+        public int Port { get { return _port; } }
+        public bool EnableSsl { get { return _enableSsl; } }
+        public string User { get { return _user; } }
         public string Pass { get { return GetPass(); } }
-        public string ReportTo { get { return reportTo; } }
+        public string ReportTo { get { return _reportTo; } }
         #endregion
 
         #region Methods
@@ -50,7 +46,7 @@ namespace ProCode.PlusHosting.IpUpdate.Service
             IntPtr valuePtr = IntPtr.Zero;
             try
             {
-                valuePtr = Marshal.SecureStringToGlobalAllocUnicode(pass);
+                valuePtr = Marshal.SecureStringToGlobalAllocUnicode(_pass);
                 return Marshal.PtrToStringUni(valuePtr);
             }
             finally

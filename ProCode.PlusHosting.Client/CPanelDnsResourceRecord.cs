@@ -10,34 +10,36 @@ namespace ProCode.PlusHosting.Client
     public class CPanelDnsResourceRecord
     {
         #region Fields
-        private readonly PlusHostingClient client;
+        public const string TypeA = "A";
+
+        private readonly PlusHostingClient _client;
         private readonly Uri domainUri;
-        private readonly DomainResourceRecordUri resourceRecordUri;
+        private readonly DomainResourceRecordUri _resourceRecordUri;
         #endregion
 
         #region Constructors
         public CPanelDnsResourceRecord(PlusHostingClient client, Uri domainUri, DomainResourceRecordUri resourceRecordUri)
         {
-            this.client = client;
+            this._client = client;
             this.domainUri = domainUri;
-            this.resourceRecordUri = resourceRecordUri;
+            this._resourceRecordUri = resourceRecordUri;
         }
         #endregion
 
         #region Properties
-        public string Name { get { return resourceRecordUri.Name; } }
-        public string RecordType { get { return resourceRecordUri.RecordType; } }
-        public string Ttl { get { return resourceRecordUri.Ttl; } }
+        public string Name { get { return _resourceRecordUri.Name; } }
+        public string RecordType { get { return _resourceRecordUri.RecordType; } }
+        public string Ttl { get { return _resourceRecordUri.Ttl; } }
         public string Data
         {
             get
             {
-                return resourceRecordUri.Data;
+                return _resourceRecordUri.Data;
             }
             set
             {
-                resourceRecordUri.Data = value;
-                client.UpdateCPanelDnsDomainResourceRecordAsync(resourceRecordUri, domainUri).Wait();
+                _resourceRecordUri.Data = value;
+                _client.UpdateCPanelDnsDomainResourceRecordAsync(_resourceRecordUri, domainUri).Wait();
             }
         }
         #endregion

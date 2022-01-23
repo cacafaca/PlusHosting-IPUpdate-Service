@@ -12,33 +12,45 @@ namespace ProCode.PlusHosting.Client
     {
         #region Fields
         private readonly PlusHostingClient client;
+        private List<CPanelDnsService> _serviceList;
         #endregion
 
         #region Constructors
         public CPanelDnsServices(PlusHostingClient client)
         {
             this.client = client ?? throw new ArgumentNullException(nameof(client));
+            _serviceList = new List<CPanelDnsService>();
         }
         #endregion
 
+        #region Properties
+
+        public List<CPanelDnsService> List
+        {
+            get { return _serviceList; }
+            set { _serviceList = value; }
+        }
+
+        #endregion
+
         #region Methods
-        public async Task<List<CPanelDnsService>> GetServiceListAsync()
+        public async Task ReadAsync()
         {
             // Login to site, to collect data.
             if (!client.IsLoggedIn)
                 await client.LoginAsync();
-
-            List<CPanelDnsService> serviceList = new List<CPanelDnsService>();
+                        
+            _serviceList.Clear();
             var serviceUriList = await client.GetCPanelDnsServiceUriListAsync();
             if (serviceUriList != null)
             {
                 foreach (var serviceUri in serviceUriList)
                 {
-                    serviceList.Add(new CPanelDnsService(client, serviceUri.Name, serviceUri.Uri));
+                    var service = new CPanelDnsService(client, serviceUri.Name, serviceUri.Uri);
+                    _serviceList.Add(service);
+                    await service.Domains.ReadAsync();
                 }
             }
-
-            return serviceList;
         }
         #endregion
     }

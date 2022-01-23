@@ -155,14 +155,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="LoginInfo.json" />
+    <None Include="LoginInfoTemplate.json" />
     <None Include="Resources\PlusHostingFavicon.ico" />
     <None Include="App.config" />
-    <Content Include="LoginInfo.json" Condition=" '$(Configuration)' == 'Debug' ">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="LoginInfoTemplate.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

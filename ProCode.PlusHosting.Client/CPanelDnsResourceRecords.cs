@@ -9,6 +9,7 @@ namespace ProCode.PlusHosting.Client
         #region Fields
         private readonly PlusHostingClient client;
         private readonly Uri domainUri;
+        private List<CPanelDnsResourceRecord> _resourceRecordList;
         #endregion
 
         #region Constructor
@@ -16,26 +17,31 @@ namespace ProCode.PlusHosting.Client
         {
             this.client = client ?? throw new ArgumentNullException(nameof(client));
             this.domainUri = domainUri ?? throw new ArgumentNullException(nameof(domainUri));
+            _resourceRecordList = new List<CPanelDnsResourceRecord>();
         }
         #endregion
 
-        public async Task<IList<CPanelDnsResourceRecord>> GetResourceRecirdListAsync()
+        #region Properties
+        public List<CPanelDnsResourceRecord> List { get { return _resourceRecordList; } }
+        #endregion
+
+        #region Methods
+        public async Task ReadAsync()
         {
             // Login to site, to collect data.
             if (!client.IsLoggedIn)
                 await client.LoginAsync();
 
-            IList<CPanelDnsResourceRecord> resourceRecordList = new List<CPanelDnsResourceRecord>();
+            _resourceRecordList.Clear();
             var resourceRecordUriList = await client.GetCPanelDnsDomainResourceRecordListAsync(domainUri);
             if (resourceRecordUriList != null)
             {
                 foreach (var resourceRecordUri in resourceRecordUriList)
                 {
-                    resourceRecordList.Add(new CPanelDnsResourceRecord(client, domainUri, resourceRecordUri));
+                    _resourceRecordList.Add(new CPanelDnsResourceRecord(client, domainUri, resourceRecordUri));
                 }
             }
-
-            return resourceRecordList;
         }
+        #endregion
     }
 }

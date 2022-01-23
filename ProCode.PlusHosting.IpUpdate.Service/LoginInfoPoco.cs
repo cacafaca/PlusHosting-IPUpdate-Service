@@ -1,6 +1,6 @@
 ﻿namespace ProCode.PlusHosting.IpUpdate.Service
 {
-    class LoginInfoPoco
+    public class LoginInfoPoco
     {
         public class Rootobject
         {

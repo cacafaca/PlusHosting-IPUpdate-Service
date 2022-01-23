@@ -67,100 +67,70 @@ namespace ProCode.PlusHosting.IpUpdate.Service
 
         private async void UpdateCheck()
         {
+            CPanelDns cpanel = new CPanelDns(loginInfo.UserCredential);
             try
             {
-                CPanelDns cpanel = new CPanelDns(loginInfo.UserCredential);
-                try
+                MyIpClient myIpClient = new MyIpClient();
+                var myIp = await myIpClient.GetMyIp();
+
+                await cpanel.ReadAsync();
+
+                foreach (var configService in loginInfo.PlusHostingRecords)
                 {
-                    MyIpClient myIpClient = new MyIpClient();
-                    var myIp = await myIpClient.GetMyIp();
-
-                    var services = await cpanel.Services.GetServiceListAsync();
-                    if (services != null)
+                    var resourceRecord = cpanel.Services.List.Where(service => service.Name == configService.ServiceName).FirstOrDefault()?
+                        .Domains.List.Where(domain => domain.Name == configService.DomainName).FirstOrDefault()?
+                        .ResourceRecords.List.Where(rr => rr.Name == configService.ResourceRecord.Name && rr.RecordType == CPanelDnsResourceRecord.TypeA).FirstOrDefault();
+                    if (resourceRecord != null)
                     {
-                        foreach (var configService in loginInfo.PlusHostingRecords)
+                        if (resourceRecord.Data != myIp.ToString())
                         {
-                            var plusHostingService = services.Where(s => s.Name == configService.ServiceName).FirstOrDefault();
-                            if (plusHostingService != null)
-                            {
-                                try
-                                {
-                                    int retryCount = 1;
-                                    while (retryCount < maxRetryCount)
-                                    {
-                                        var plusHostingDomains = await plusHostingService.Domains.GetDomainListAsync();
-                                        if (plusHostingDomains != null)
-                                        {
-                                            var plusHostingDomain = plusHostingDomains.Where(d => d.Name == configService.DomainName).FirstOrDefault();
-                                            if (plusHostingDomain != null)
-                                            {
-                                                var plusHostingResourceRecords = await plusHostingDomain.ResourceRecords.GetResourceRecirdListAsync();
-                                                if (plusHostingResourceRecords != null)
-                                                {
-                                                    var plusHostingResourceRecord = plusHostingResourceRecords.Where(rec => rec.RecordType == configService.ResourceRecord.Type && rec.Name == configService.ResourceRecord.Name).FirstOrDefault();
-                                                    if (plusHostingResourceRecord != null)
-                                                    {
-                                                        if (plusHostingResourceRecord.Data != myIp.ToString())
-                                                        {
-                                                            string oldIp = plusHostingResourceRecord.Data;
-                                                            plusHostingResourceRecord.Data = myIp.ToString();
+                            string oldIp = resourceRecord.Data;
+                            resourceRecord.Data = myIp.ToString();
 
-                                                            // Notify IP address change.
-                                                            var emailClient = new EmailClient(loginInfo.MailSmtpInfo);
-                                                            emailClient.Send(emailSuccesseIPUpdateSubject,
-        $@"Hi,
+                            // Notify IP address change.
+                            var emailClient = new EmailClient(loginInfo.MailSmtpInfo);
+                            emailClient.Send(emailSuccesseIPUpdateSubject,
+$@"Hi,
 
-New IP ({plusHostingResourceRecord.Data}) address updated on site www.plus.rs.
+New IP ({resourceRecord.Data}) address updated on site www.plus.rs.
 
 Old IP: {oldIp}
 
 Sincerely yours,
 Plus Hosting IP Updater Windows Service");
-                                                        }
-                                                        else
-                                                        {
-                                                            Util.Trace.WriteLine($"No need to update IP Address. (PlusHosting) {plusHostingResourceRecord.Data} = {myIp} (my IP).");
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                catch (Exception ex)
-                                {
-
-                                }
-                            }
+                        }
+                        else
+                        {
+                            Util.Trace.WriteLine($"No need to update IP Address. (PlusHosting) {resourceRecord.Data} = {myIp} (my IP).");
                         }
                     }
+                    else
+                    {
+                        Util.Trace.WriteLine($"Resource record not found.");
+                        // Send an email maybe...
+                    }
                 }
-                catch (ClientException ex)
-                {
-                    Util.Trace.WriteLine(ex.ToString());
-                    var emailSend = new EmailClient(loginInfo.MailSmtpInfo);
-                    emailSend.Send(emailErrorSubject, ex.ToString(), ex.Html != null ?
-                        new System.Collections.Generic.Dictionary<string, System.IO.Stream>
-                        {
+            }
+            catch (ClientException ex)
+            {
+                Util.Trace.WriteLine(ex.ToString());
+                var emailSend = new EmailClient(loginInfo.MailSmtpInfo);
+                emailSend.Send(emailErrorSubject, ex.ToString(), ex.Html != null ?
+                    new System.Collections.Generic.Dictionary<string, System.IO.Stream>
+                    {
                             {emailErrorAttachedFileName, new System.IO.MemoryStream(System.Text.Encoding.UTF8.GetBytes(ex.Html)) }
-                        } : null);
-                }
-                catch (Exception ex)
-                {
-                    Util.Trace.WriteLine(ex.ToString());
-                    var emailSend = new EmailClient(loginInfo.MailSmtpInfo);
-                    emailSend.Send(emailErrorSubject, ex.ToString());
-                }
-                finally
-                {
-                    cpanel.Logout();
-                }
+                    } : null);
             }
             catch (Exception ex)
             {
                 Util.Trace.WriteLine(ex.ToString());
+                var emailSend = new EmailClient(loginInfo.MailSmtpInfo);
+                emailSend.Send(emailErrorSubject, ex.ToString());
             }
-
+            finally
+            {
+                cpanel.Logout();
+            }
         }
 
 #if DEBUG

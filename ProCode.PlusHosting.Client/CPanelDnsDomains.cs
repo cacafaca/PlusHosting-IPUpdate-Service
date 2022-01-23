@@ -7,36 +7,48 @@ namespace ProCode.PlusHosting.Client
     public class CPanelDnsDomains
     {
         #region Fields
-        private readonly Uri serviceUri;
-        private readonly PlusHostingClient client;
+        private readonly Uri _serviceUri;
+        private readonly PlusHostingClient _client;
+        private IList<CPanelDnsDomain> _domainList;
         #endregion
 
         #region Constructors
         public CPanelDnsDomains(PlusHostingClient client, Uri serviceUri)
         {
-            this.client = client ?? throw new ArgumentNullException(nameof(client));
-            this.serviceUri = serviceUri ?? throw new ArgumentNullException(nameof(client));
+            this._client = client ?? throw new ArgumentNullException(nameof(client));
+            this._serviceUri = serviceUri ?? throw new ArgumentNullException(nameof(client));
+            _domainList = new List<CPanelDnsDomain>();
         }
         #endregion
 
+        #region Properties
+
+        public IList<CPanelDnsDomain> List
+        {
+            get { return _domainList; }
+            set { _domainList = value; }
+        }
+
+        #endregion
+
         #region Methods
-        public async Task<IList<CPanelDnsDomain>> GetDomainListAsync()
+        public async Task ReadAsync()
         {
             // Login to site, to collect data.
-            if (!client.IsLoggedIn)
-                await client.LoginAsync();
+            if (!_client.IsLoggedIn)
+                await _client.LoginAsync();
 
-            IList<CPanelDnsDomain> domainList = new List<CPanelDnsDomain>();
-            var domainUriList = await client.GetCPanelDnsDomainUriListAsync(serviceUri);
+            _domainList.Clear();
+            var domainUriList = await _client.GetCPanelDnsDomainUriListAsync(_serviceUri);
             if (domainUriList != null)
             {
                 foreach (var domainUri in domainUriList)
                 {
-                    domainList.Add(new CPanelDnsDomain(client, domainUri.Name, domainUri.Uri));
+                    var domain = new CPanelDnsDomain(_client, domainUri.Name, domainUri.Uri);
+                    _domainList.Add(domain);
+                    await domain.ResourceRecords.ReadAsync();
                 }
             }
-
-            return domainList;
         }
         #endregion
     }

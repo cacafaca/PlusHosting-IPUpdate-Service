@@ -5,7 +5,7 @@ using System.Text.Json;
 
 namespace ProCode.PlusHosting.IpUpdate.Service
 {
-    class LoginInfo
+    public class LoginInfo
     {
         #region Constants
         public const string ConfigFileName = "LoginInfo.json";
@@ -36,7 +36,7 @@ namespace ProCode.PlusHosting.IpUpdate.Service
         #endregion
 
         #region Properties
-        public UserCredential UserCredential { get; }
+        public Client.UserCredential UserCredential { get; }
         public MailSmtpInfo MailSmtpInfo { get; }
         public LoginInfoPoco.PlusHostingRecord[] PlusHostingRecords { get; }
         #endregion

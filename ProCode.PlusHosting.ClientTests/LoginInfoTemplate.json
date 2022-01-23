@@ -1,0 +1,40 @@
+{
+  "Comment": "Copy this file (LoginInfoTemplate.json) to LoginInfo.json, in the same folder, and change values.",
+  "PlusHostingLoginInfo": {
+    "User": "<email_address_here>",
+    "Pass": "<password_here>"
+  },
+  "PlusHostingRecords": [
+    {
+      "ServiceName": "<ServiceName1>",
+      "DomainName": "<DomainName1>",
+      "ResourceRecord": {
+        "Type": "A",
+        "Name": "<ResourceRecordName1>"
+      }
+    },
+    {
+      "ServiceName": "<ServiceName1>",
+      "DomainName": "<DomainName2>",
+      "ResourceRecord": {
+        "Type": "A",
+        "Name": "<ResourceRecordName2>"
+      }
+    }
+  ],
+  "MailSmtpInfo": {
+    "Comment1": "Gmail SMTP setup settings:",
+    "Comment2": "   1. SMTP username: Your Gmail address.",
+    "Comment3": "   2. SMTP password: Your Gmail password.",
+    "Comment4": "   3. SMTP server address: smtp.gmail.com.",
+    "Comment5": "   4. Gmail SMTP port: 587.",
+    "Comment6": "   5. SMTP port(SSL): 465.",
+    "Comment7": "   7. SMTP TLS/SSL required: yes.",
+    "Server": "<e.g. smtp.gmail.com. I tested only with Gmail.>",
+    "Port": "<e.g. 587. Tested only with this port for Gmail.>",
+    "EnableSsl": "<true or false>",
+    "User": "<email_address_here>",
+    "Pass": "<password_here>",
+    "ReportTo": "<replace_with_emal_address_where_you_want_to_send>"
+  }
+}
